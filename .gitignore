@@ -1,0 +1,34 @@
+/04. SERVIDOR/WS_CON_UNI_JAVA_SOAP/target/
+
+/04. CLIESC/ESC_CON_UNI_JAVA_SOAP/target/
+
+/04. CLICON/CONSOLE_CON_UNI_JAVA_SOAP/target/
+
+# Claude Code: local state and personal settings
+.claude/settings.local.json
+.claude/worktrees/
+.claude/projects/
+.claude/todos/
+.claude/statsig/
+.claude/ide/
+*.claude.local.md
+
+# Gentle AI / Agent Teams Lite: skill registry, cache and runtime state
+.atl/
+.gentle-ai/
+.pi/gentle-ai/
+odd/
+
+# CodeGraph: per-worktree SQLite index (rebuilt by `codegraph init`)
+.codegraph/
+
+# Engram persistent memory local data
+.engram/
+
+# Other AI coding agents' local state
+.opencode/
+.codex/
+.cursor/
+.windsurf/
+.gemini/
+/04. CLIWEB/WEB_CON_UNI_JAVA_SOAP/target/
