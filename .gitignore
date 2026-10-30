@@ -32,3 +32,6 @@ odd/
 .windsurf/
 .gemini/
 /04. CLIWEB/WEB_CON_UNI_JAVA_SOAP/target/
+
+# PowerDesigner: copias de respaldo automáticas
+*.oob
