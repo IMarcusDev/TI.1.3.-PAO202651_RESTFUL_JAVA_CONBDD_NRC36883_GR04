@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <TextView
+            style="@style/TituloSeccion"
+            android:text="@string/op_pregunta" />
+
+        <com.google.android.material.button.MaterialButtonToggleGroup
+            android:id="@+id/grupoTipo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            app:selectionRequired="true"
+            app:singleSelection="true">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnDeposito"
+                style="@style/BotonSegmento"
+                android:text="@string/op_deposito" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnRetiro"
+                style="@style/BotonSegmento"
+                android:text="@string/op_retiro" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnTransferencia"
+                style="@style/BotonSegmento"
+                android:text="@string/op_transferencia" />
+        </com.google.android.material.button.MaterialButtonToggleGroup>
+
+        <TextView
+            android:id="@+id/lblDescripcion"
+            style="@style/TextoSecundario"
+            android:layout_marginTop="10dp" />
+
+        <!-- Cliente: la cuenta de la sesión actúa como origen -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/tarjetaOrigen"
+            style="@style/Tarjeta"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="16dp">
+
+                <ImageView
+                    style="@style/CirculoIcono"
+                    android:src="@drawable/ic_tarjeta"
+                    app:tint="@color/eureka_primario" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="14dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        style="@style/Etiqueta"
+                        android:text="@string/op_desde_su_cuenta" />
+
+                    <TextView
+                        android:id="@+id/lblCuentaOrigen"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif-medium"
+                        android:letterSpacing="0.04"
+                        android:textColor="@color/texto_oscuro"
+                        android:textSize="17sp" />
+
+                    <TextView
+                        android:id="@+id/lblSaldoOrigen"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/texto_secundario"
+                        android:textSize="13sp" />
+                </LinearLayout>
+
+                <com.google.android.material.progressindicator.CircularProgressIndicator
+                    android:id="@+id/prgOrigen"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:indeterminate="true"
+                    android:visibility="gone"
+                    app:indicatorColor="@color/eureka_primario"
+                    app:indicatorSize="20dp"
+                    app:trackThickness="2dp" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            style="@style/Tarjeta"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tilCuenta"
+                    style="@style/Campo"
+                    android:layout_marginBottom="8dp"
+                    android:hint="@string/op_cuenta"
+                    app:helperText="@string/login_ayuda_cuenta"
+                    app:startIconDrawable="@drawable/ic_tarjeta">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/txtCuenta"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:imeOptions="actionNext"
+                        android:inputType="number"
+                        android:maxLength="8"
+                        android:maxLines="1" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tilDestino"
+                    style="@style/Campo"
+                    android:layout_marginBottom="8dp"
+                    android:hint="@string/op_cuenta_destino"
+                    app:helperText="@string/login_ayuda_cuenta"
+                    app:startIconDrawable="@drawable/ic_transferir">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/txtDestino"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:imeOptions="actionNext"
+                        android:inputType="number"
+                        android:maxLength="8"
+                        android:maxLines="1" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tilImporte"
+                    style="@style/Campo"
+                    android:layout_marginBottom="8dp"
+                    android:hint="@string/op_importe"
+                    app:helperText="@string/op_importe_ayuda"
+                    app:startIconDrawable="@drawable/ic_operaciones">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/txtImporte"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:digits="0123456789.,"
+                        android:imeOptions="actionNext"
+                        android:inputType="numberDecimal"
+                        android:maxLength="13"
+                        android:maxLines="1" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tilClave"
+                    style="@style/Campo"
+                    android:hint="@string/op_clave_cuenta"
+                    app:endIconMode="password_toggle"
+                    app:helperText="@string/login_ayuda_clave_cuenta"
+                    app:startIconDrawable="@drawable/ic_candado">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/txtClave"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:imeOptions="actionDone"
+                        android:inputType="numberPassword"
+                        android:maxLength="6"
+                        android:maxLines="1" />
+                </com.google.android.material.textfield.TextInputLayout>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <TextView
+            android:id="@+id/lblError"
+            style="@style/AvisoError"
+            android:layout_marginTop="16dp"
+            android:visibility="gone" />
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnRegistrar"
+                style="@style/BotonPrimario" />
+
+            <com.google.android.material.progressindicator.CircularProgressIndicator
+                android:id="@+id/prgRegistrar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:elevation="8dp"
+                android:indeterminate="true"
+                android:visibility="gone"
+                app:indicatorColor="@color/blanco"
+                app:indicatorSize="24dp"
+                app:trackThickness="3dp" />
+        </FrameLayout>
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>

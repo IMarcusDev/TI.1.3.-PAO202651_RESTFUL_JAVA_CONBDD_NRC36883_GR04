@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingStart="24dp"
+    android:paddingTop="12dp"
+    android:paddingEnd="24dp"
+    android:paddingBottom="24dp">
+
+    <View
+        android:layout_width="40dp"
+        android:layout_height="5dp"
+        android:layout_gravity="center_horizontal"
+        android:background="@drawable/asa_hoja_fondo" />
+
+    <ImageView
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/circulo_fondo"
+        android:backgroundTint="@color/ingreso_fondo"
+        android:importantForAccessibility="no"
+        android:padding="14dp"
+        android:src="@drawable/ic_exito"
+        app:tint="@color/ingreso" />
+
+    <TextView
+        android:id="@+id/lblMensaje"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="14dp"
+        android:accessibilityLiveRegion="polite"
+        android:fontFamily="sans-serif-medium"
+        android:gravity="center"
+        android:textColor="@color/texto_oscuro"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/lblImporte"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:fontFamily="sans-serif-medium"
+        android:gravity="center"
+        android:textColor="@color/eureka_primario"
+        android:textSize="30sp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:gravity="center"
+        android:text="@string/comp_titulo"
+        android:textColor="@color/texto_secundario"
+        android:textSize="13sp" />
+
+    <com.google.android.material.card.MaterialCardView
+        style="@style/Tarjeta"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp">
+
+        <LinearLayout
+            android:id="@+id/listaDatos"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:divider="@drawable/divisor"
+            android:orientation="vertical"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
+            android:showDividers="middle" />
+    </com.google.android.material.card.MaterialCardView>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnListo"
+        style="@style/BotonPrimario"
+        android:layout_marginTop="20dp"
+        android:text="@string/comp_listo" />
+</LinearLayout>
