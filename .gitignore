@@ -1,8 +1,11 @@
-/04. SERVIDOR/WS_CON_UNI_JAVA_RESTFUL/target/
-
-/04. CLIESC/ESC_CON_UNI_JAVA_RESTful/target/
-
-/04. CLICON/CONSOLE_CON_UNI_JAVA_RESTful/target/
+# revisado y aprovado por Marcos Escobar
+# Salidas de compilación de todos los proyectos del TI (Maven/NetBeans, .NET, Visual Studio).
+# Son reglas generales para que sigan funcionando aunque se renombren las carpetas.
+target/
+bin/
+obj/
+.vs/
+*.user
 
 # Claude Code: local state and personal settings
 .claude/settings.local.json
@@ -31,9 +34,6 @@ odd/
 .cursor/
 .windsurf/
 .gemini/
-/04. CLIWEB/WEB_CON_UNI_JAVA_RESTful/target/
-/04. CLIWEB/WEB_CON_UNI_JAVA_SOAP/target/
-/04. SERVIDOR/WS_CON_UNI_JAVA_RESTFul/target/
 
 # PowerDesigner: copias de respaldo automáticas
 *.oob
