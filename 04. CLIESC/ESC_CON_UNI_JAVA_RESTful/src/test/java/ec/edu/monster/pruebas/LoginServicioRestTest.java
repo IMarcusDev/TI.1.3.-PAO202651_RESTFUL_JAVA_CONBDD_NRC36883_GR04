@@ -67,7 +67,7 @@ class LoginServicioRestTest {
 
             FakeRestServer.Peticion peticion = servidor.ultimaPeticion();
             assertEquals("POST", peticion.metodo());
-            assertEquals("/WS_CON_UNI_JAVA_RESTFUL/api/login", peticion.ruta());
+            assertEquals("/WS_CON_UNI_JAVA_RESTFUL/api/Login", peticion.ruta());
             assertTrue(peticion.contentType().startsWith("application/json"), peticion.contentType());
             assertNull(peticion.autorizacion());
             JSONObject cuerpo = new JSONObject(peticion.cuerpo());

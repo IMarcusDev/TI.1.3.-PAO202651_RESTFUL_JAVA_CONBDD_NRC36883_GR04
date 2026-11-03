@@ -43,7 +43,7 @@ public final class FakeRestServer implements AutoCloseable {
         return new FakeRestServer(configuracion);
     }
 
-    /** Answers {@code ruta} (relative to the context, e.g. "api/login") with this status and JSON. */
+    /** Answers {@code ruta} (relative to the context, e.g. "api/Login") with this status and JSON. */
     public FakeRestServer responder(String ruta, int estado, String json) {
         respuestas.put(contexto + "/" + ruta, new Respuesta(estado, json, 0));
         return this;

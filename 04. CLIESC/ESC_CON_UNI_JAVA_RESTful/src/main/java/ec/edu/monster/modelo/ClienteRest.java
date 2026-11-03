@@ -41,19 +41,13 @@ final class ClienteRest {
         this.sinRespuestaATiempo = sinRespuestaATiempo;
     }
 
-    /**
-     * POSTs {@code cuerpo} to {@code endpoint}, adding the raw token in {@code Authorization}
-     * when it is not null.
-     */
-    JSONObject post(String endpoint, String token, JSONObject cuerpo) throws ServicioException {
+    /** POSTs {@code cuerpo} to {@code endpoint}; the server reads the session token from the body. */
+    JSONObject post(String endpoint, JSONObject cuerpo) throws ServicioException {
         HttpRequest.Builder peticion = HttpRequest.newBuilder(URI.create(endpoint))
                 .timeout(esperaRespuesta)
                 .header("Content-Type", "application/json; charset=UTF-8")
                 .header("Accept", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(cuerpo.toString(), StandardCharsets.UTF_8));
-        if (token != null) {
-            peticion.header("Authorization", token);
-        }
 
         HttpResponse<String> respuesta;
         try {

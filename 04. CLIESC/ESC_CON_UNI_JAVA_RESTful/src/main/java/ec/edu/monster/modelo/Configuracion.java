@@ -97,7 +97,7 @@ public final class Configuracion {
         return "http://" + valor("ws.host") + ":" + valor("ws.port") + "/" + valor("ws.context");
     }
 
-    /** Full address of one service, e.g. getEndpoint("api/login"). */
+    /** Full address of one service, e.g. getEndpoint("api/Login"). */
     public String getEndpoint(String servicio) {
         return getUrlBase() + "/" + servicio;
     }

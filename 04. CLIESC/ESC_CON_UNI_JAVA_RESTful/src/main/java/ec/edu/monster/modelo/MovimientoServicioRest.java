@@ -5,8 +5,8 @@ import java.time.Duration;
 import org.json.JSONObject;
 
 /**
- * Real implementation of {@link MovimientoServicio}: calls {@code POST api/movimientos/...}
- * with the session token and turns its answer (or a connection failure) into a result or an
+ * Real implementation of {@link MovimientoServicio}: calls {@code POST api/Movimiento/...}
+ * with the session token in the body and turns its answer (or a connection failure) into a result or an
  * exception.
  */
 public class MovimientoServicioRest implements MovimientoServicio {
@@ -51,11 +51,12 @@ public class MovimientoServicioRest implements MovimientoServicio {
     private ResultadoMovimiento ejecutar(String ruta, String token, String cuentaOrigen, String cuentaDestino,
             BigDecimal valor) throws ServicioException {
         JSONObject movimiento = new JSONObject()
+                .put("token", token)
                 .put("cuentaOrigen", cuentaOrigen)
                 .put("cuentaDestino", cuentaDestino)
                 .put("valor", valor);
 
-        JSONObject respuesta = cliente.post(configuracion.getEndpoint(ruta), token, movimiento);
+        JSONObject respuesta = cliente.post(configuracion.getEndpoint(ruta), movimiento);
 
         // Without the id the receipt would show movement number 0
         if (!(respuesta.opt("idMovimiento") instanceof Number id)) {

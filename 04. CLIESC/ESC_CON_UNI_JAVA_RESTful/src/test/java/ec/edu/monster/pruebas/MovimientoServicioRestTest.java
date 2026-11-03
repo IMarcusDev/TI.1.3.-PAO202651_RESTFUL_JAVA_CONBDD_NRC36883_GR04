@@ -1,6 +1,7 @@
 package ec.edu.monster.pruebas;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import ec.edu.monster.dobles.ConfiguracionDePrueba;
@@ -56,9 +57,10 @@ class MovimientoServicioRestTest {
             assertEquals("Depósito registrado", resultado.mensaje());
             FakeRestServer.Peticion peticion = servidor.ultimaPeticion();
             assertEquals("POST", peticion.metodo());
-            assertEquals("/WS_CON_UNI_JAVA_RESTFUL/api/movimientos/deposito", peticion.ruta());
-            assertEquals(TOKEN, peticion.autorizacion());
+            assertEquals("/WS_CON_UNI_JAVA_RESTFUL/api/Movimiento/deposito", peticion.ruta());
+            assertNull(peticion.autorizacion());
             JSONObject cuerpo = new JSONObject(peticion.cuerpo());
+            assertEquals(TOKEN, cuerpo.getString("token"));
             assertEquals("0001", cuerpo.getString("cuentaOrigen"));
             assertEquals("0004", cuerpo.getString("cuentaDestino"));
             assertEquals(0, new BigDecimal("100").compareTo(cuerpo.getBigDecimal("valor")));
@@ -74,8 +76,9 @@ class MovimientoServicioRestTest {
             assertEquals(102, resultado.idMovimiento());
             assertEquals("Retiro registrado", resultado.mensaje());
             FakeRestServer.Peticion peticion = servidor.ultimaPeticion();
-            assertEquals("/WS_CON_UNI_JAVA_RESTFUL/api/movimientos/retiro", peticion.ruta());
+            assertEquals("/WS_CON_UNI_JAVA_RESTFUL/api/Movimiento/retiro", peticion.ruta());
             JSONObject cuerpo = new JSONObject(peticion.cuerpo());
+            assertEquals(TOKEN, cuerpo.getString("token"));
             assertEquals("0004", cuerpo.getString("cuentaOrigen"));
             assertEquals("", cuerpo.getString("cuentaDestino"));
             assertEquals(0, new BigDecimal("50.5").compareTo(cuerpo.getBigDecimal("valor")));
@@ -91,8 +94,9 @@ class MovimientoServicioRestTest {
             assertEquals(103, resultado.idMovimiento());
             assertEquals("Transferencia registrada", resultado.mensaje());
             FakeRestServer.Peticion peticion = servidor.ultimaPeticion();
-            assertEquals("/WS_CON_UNI_JAVA_RESTFUL/api/movimientos/transferencia", peticion.ruta());
-            assertEquals(TOKEN, peticion.autorizacion());
+            assertEquals("/WS_CON_UNI_JAVA_RESTFUL/api/Movimiento/transferencia", peticion.ruta());
+            assertNull(peticion.autorizacion());
+            assertEquals(TOKEN, new JSONObject(peticion.cuerpo()).getString("token"));
         }
 
         @Test
