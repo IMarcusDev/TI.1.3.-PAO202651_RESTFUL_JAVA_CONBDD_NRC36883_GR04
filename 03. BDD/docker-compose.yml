@@ -1,0 +1,31 @@
+# Local MariaDB for the EurekaBank SOAP server.
+# Values match 04. SERVIDOR/.../config/DBConfig.java:
+#   jdbc:mariadb://localhost:3306/EurekaBank  user root / password root
+#
+# Start:   docker compose up -d        (run inside "03. BDD")
+# Stop:    docker compose down
+# Reset:   docker compose down -v      (deletes the data, the script runs again)
+services:
+  mariadb:
+    # 11.4 = current LTS; supported by the Payara driver mariadb-java-client 3.5.1
+    image: mariadb:11.4
+    container_name: eurekabank-mariadb
+    restart: unless-stopped
+    environment:
+      MARIADB_ROOT_PASSWORD: root      # DBConfig PASSWORD (user root)
+      MARIADB_DATABASE: EurekaBank     # created empty, then the script below fills it
+    ports:
+      - "3306:3306"                    # host port used by DBConfig URL
+    volumes:
+      # Runs only on the first start (empty data volume), in alphabetical order
+      - ./EurekaBank_MySQL.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+      # Keeps the data between restarts
+      - eurekabank-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  eurekabank-data:
