@@ -2,6 +2,7 @@ package ec.edu.monster.modelo;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Properties;
@@ -99,6 +100,27 @@ public final class Configuracion {
     /** Full address of one service, e.g. getEndpoint("api/login"). */
     public String getEndpoint(String servicio) {
         return getUrlBase() + "/" + servicio;
+    }
+
+    /**
+     * Checks every key and the resulting address up front, so a hand-edited file fails at startup
+     * with a message that names the file instead of later, deep inside a request.
+     *
+     * @return this configuration, for chaining
+     */
+    public Configuracion validar() {
+        getPuerto();
+        String base = getUrlBase();
+        URI uri;
+        try {
+            uri = URI.create(base);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalStateException("La dirección del servidor no es válida en " + origen + ": " + base, e);
+        }
+        if (uri.getHost() == null) {
+            throw new IllegalStateException("La dirección del servidor no es válida en " + origen + ": " + base);
+        }
+        return this;
     }
 
     public String getHost() {

@@ -39,14 +39,15 @@ public final class App {
     }
 
     private static void iniciar() {
-        Configuracion configuracion;
+        App app;
         try {
-            configuracion = Configuracion.cargar();
+            // Validated up front: a hand-edited config.properties must fail here, with its message
+            app = new App(Configuracion.cargar().validar());
         } catch (RuntimeException e) {
             error(e.getMessage());
             return;
         }
-        new App(configuracion).mostrarLogin();
+        app.mostrarLogin();
     }
 
     private void mostrarLogin() {
@@ -75,6 +76,8 @@ public final class App {
             return;
         }
         conectar(principal, servicio);
+        // Same live server indicator as the login window
+        new EstadoControlador(principal.getIndicadorEstado(), estado);
         principal.setVisible(true);
     }
 

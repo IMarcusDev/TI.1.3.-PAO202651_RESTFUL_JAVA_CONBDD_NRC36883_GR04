@@ -10,6 +10,8 @@ import org.json.JSONObject;
  */
 public class MovimientoServicioRest implements MovimientoServicio {
 
+    private static final String SIN_ID = "El servidor no devolvió el número de movimiento";
+
     private final Configuracion configuracion;
     private final ClienteRest cliente = new ClienteRest();
 
@@ -45,7 +47,11 @@ public class MovimientoServicioRest implements MovimientoServicio {
 
         JSONObject respuesta = cliente.post(configuracion.getEndpoint(ruta), token, movimiento);
 
-        return new ResultadoMovimiento(respuesta.optInt("idMovimiento"),
+        // Without the id the receipt would show movement number 0
+        if (!(respuesta.opt("idMovimiento") instanceof Number id)) {
+            throw new ServicioException(SIN_ID);
+        }
+        return new ResultadoMovimiento(id.intValue(),
                 ServicioException.mensaje(respuesta.optString("mensaje", null)));
     }
 }

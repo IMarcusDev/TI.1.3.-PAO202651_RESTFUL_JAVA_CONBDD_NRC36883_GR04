@@ -123,6 +123,52 @@ class ConfiguracionTest {
         }
     }
 
+    @Test
+    void validateAcceptsACompleteConfiguration() {
+        Configuracion configuracion = ConfiguracionDePrueba.paraPuerto(9090);
+
+        assertEquals(configuracion, configuracion.validar());
+    }
+
+    @Test
+    void validateReportsAMissingKeyNamingTheFile(@TempDir Path carpeta) throws IOException {
+        Path archivo = carpeta.resolve("incompleto.properties");
+        Files.writeString(archivo, "ws.host=localhost\nws.port=8080\n", StandardCharsets.UTF_8);
+
+        IllegalStateException error = assertThrows(IllegalStateException.class,
+                () -> Configuracion.desdeArchivo(archivo).validar());
+
+        assertTrue(error.getMessage().contains("Falta 'ws.context'"), error.getMessage());
+        assertTrue(error.getMessage().contains("incompleto.properties"), error.getMessage());
+    }
+
+    @Test
+    void validateRejectsANonNumericPort() {
+        Properties propiedades = new Properties();
+        propiedades.setProperty("ws.host", "localhost");
+        propiedades.setProperty("ws.port", "ocho mil");
+        propiedades.setProperty("ws.context", CONTEXTO);
+
+        IllegalStateException error = assertThrows(IllegalStateException.class,
+                () -> new Configuracion(propiedades).validar());
+
+        assertEquals("'ws.port' no es un número en config.properties: ocho mil", error.getMessage());
+    }
+
+    @Test
+    void validateRejectsAMalformedHost() {
+        Properties propiedades = new Properties();
+        propiedades.setProperty("ws.host", "192.168.1 .50");
+        propiedades.setProperty("ws.port", "8080");
+        propiedades.setProperty("ws.context", CONTEXTO);
+
+        IllegalStateException error = assertThrows(IllegalStateException.class,
+                () -> new Configuracion(propiedades).validar());
+
+        assertTrue(error.getMessage().startsWith("La dirección del servidor no es válida en config.properties"),
+                error.getMessage());
+    }
+
     private static void escribir(Path archivo, String host, String puerto) throws IOException {
         Files.writeString(archivo,
                 "ws.host=" + host + "\nws.port=" + puerto + "\nws.context=" + CONTEXTO + "\n",

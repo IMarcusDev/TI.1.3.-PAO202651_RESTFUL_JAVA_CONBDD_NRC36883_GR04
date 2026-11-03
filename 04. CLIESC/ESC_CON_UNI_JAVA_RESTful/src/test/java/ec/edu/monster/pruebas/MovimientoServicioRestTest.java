@@ -116,6 +116,16 @@ class MovimientoServicioRestTest {
         }
 
         @Test
+        void anAcceptedMovementWithoutIdIsRejected() {
+            servidor.responder(RutasApi.DEPOSITO, 200, "{\"estado\":\"OK\",\"mensaje\":\"Depósito registrado\"}");
+
+            ServicioException error = assertThrows(ServicioException.class,
+                    () -> servicio.deposito(TOKEN, "0001", "0004", new BigDecimal("1")));
+
+            assertEquals("El servidor no devolvió el número de movimiento", error.getMessage());
+        }
+
+        @Test
         void anErrorWithoutMessageUsesTheDefault() {
             servidor.responder(RutasApi.DEPOSITO, 200, "{\"estado\":\"ERROR\"}");
 
