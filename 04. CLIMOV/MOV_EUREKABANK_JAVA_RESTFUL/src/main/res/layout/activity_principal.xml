@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/raizPrincipal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/fondo_app"
+    android:orientation="vertical">
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/barraSuperior"
+        style="@style/BarraSuperior" />
+
+    <FrameLayout
+        android:id="@+id/contenedorPestanas"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/barraPestanas"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/blanco"
+        android:elevation="8dp"
+        app:itemIconTint="@color/pestana_color"
+        app:itemTextColor="@color/pestana_color"
+        app:labelVisibilityMode="labeled"
+        app:menu="@menu/menu_pestanas" />
+</LinearLayout>

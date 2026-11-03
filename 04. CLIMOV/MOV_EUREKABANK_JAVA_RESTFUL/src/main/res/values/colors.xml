@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Paleta institucional: azul marino y grises (RNF-009) -->
+    <color name="eureka_primario">#344C74</color>
+    <color name="eureka_primario_oscuro">#22365A</color>
+    <color name="eureka_primario_suave">#E9EEF6</color>
+    <color name="eureka_acento">#8FB3E8</color>
+
+    <color name="fondo_app">#F3F4F6</color>
+    <color name="blanco">#FFFFFF</color>
+    <color name="texto_oscuro">#1F2937</color>
+    <color name="texto_secundario">#6B7280</color>
+    <color name="borde_campo">#8A8F98</color>
+    <color name="borde_tarjeta">#E2E5EA</color>
+    <color name="texto_sobre_primario">#D5DCE8</color>
+    <color name="campo_sobre_primario">#52658A</color>
+
+    <color name="ingreso">#157F4A</color>
+    <color name="ingreso_fondo">#E3F5EA</color>
+    <color name="salida">#B42318</color>
+    <color name="salida_fondo">#FDECEA</color>
+    <color name="texto_error">#C62828</color>
+    <color name="error_fondo">#FDECEA</color>
+    <color name="advertencia">#9A6700</color>
+    <color name="advertencia_fondo">#FFF4D6</color>
+</resources>

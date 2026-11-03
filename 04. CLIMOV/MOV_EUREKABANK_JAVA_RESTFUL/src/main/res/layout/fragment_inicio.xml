@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/refrescar"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp">
+
+            <TextView
+                style="@style/TextoSecundario"
+                android:text="@string/inicio_saludo"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/lblNombre"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-medium"
+                android:textColor="@color/texto_oscuro"
+                android:textSize="24sp" />
+
+            <TextView
+                android:id="@+id/lblPerfil"
+                style="@style/Pastilla"
+                android:layout_marginTop="8dp"
+                android:backgroundTint="@color/eureka_primario_suave"
+                android:textColor="@color/eureka_primario" />
+
+            <!-- Cliente: cuenta de la sesión -->
+            <FrameLayout
+                android:id="@+id/tarjetaCuenta"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/tarjeta_cuenta_fondo"
+                android:minHeight="176dp"
+                android:padding="22dp"
+                android:visibility="gone">
+
+                <LinearLayout
+                    android:id="@+id/datosCuenta"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/inicio_cuenta_ahorros"
+                            android:textColor="@color/texto_sobre_primario"
+                            android:textSize="14sp" />
+
+                        <TextView
+                            android:id="@+id/lblEstadoCuenta"
+                            style="@style/Pastilla"
+                            android:backgroundTint="#26FFFFFF"
+                            android:textColor="@color/blanco" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/lblNumeroCuenta"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:letterSpacing="0.08"
+                        android:textColor="@color/blanco"
+                        android:textSize="16sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="22dp"
+                        android:text="@string/inicio_saldo_disponible"
+                        android:textColor="@color/texto_sobre_primario"
+                        android:textSize="13sp" />
+
+                    <TextView
+                        android:id="@+id/lblSaldo"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif-medium"
+                        android:maxLines="1"
+                        android:textColor="@color/blanco"
+                        android:textSize="32sp"
+                        app:autoSizeMaxTextSize="32sp"
+                        app:autoSizeMinTextSize="20sp"
+                        app:autoSizeTextType="uniform" />
+
+                    <TextView
+                        android:id="@+id/lblTitular"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:textColor="@color/texto_sobre_primario"
+                        android:textSize="14sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/estadoCargaCuenta"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <com.google.android.material.progressindicator.CircularProgressIndicator
+                        android:id="@+id/prgCuenta"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:indeterminate="true"
+                        app:indicatorColor="@color/blanco"
+                        app:indicatorSize="32dp"
+                        app:trackThickness="3dp" />
+
+                    <TextView
+                        android:id="@+id/lblEstadoCarga"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:gravity="center"
+                        android:textColor="@color/blanco"
+                        android:textSize="14sp" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnReintentarCuenta"
+                        style="@style/Widget.Material3.Button.OutlinedButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="@string/reintentar"
+                        android:textColor="@color/blanco"
+                        android:visibility="gone"
+                        app:strokeColor="@color/texto_sobre_primario" />
+                </LinearLayout>
+            </FrameLayout>
+
+            <!-- Empleado: ventanilla -->
+            <LinearLayout
+                android:id="@+id/tarjetaVentanilla"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/tarjeta_cuenta_fondo"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="22dp"
+                android:visibility="gone">
+
+                <ImageView
+                    android:layout_width="52dp"
+                    android:layout_height="52dp"
+                    android:background="@drawable/logo_fondo"
+                    android:importantForAccessibility="no"
+                    android:padding="13dp"
+                    android:src="@drawable/ic_banco"
+                    app:tint="@color/blanco" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif-medium"
+                        android:text="@string/inicio_ventanilla"
+                        android:textColor="@color/blanco"
+                        android:textSize="18sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="@string/inicio_ventanilla_detalle"
+                        android:textColor="@color/texto_sobre_primario"
+                        android:textSize="14sp" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <TextView
+                style="@style/TituloSeccion"
+                android:layout_marginTop="28dp"
+                android:text="@string/inicio_acciones" />
+
+            <com.google.android.material.card.MaterialCardView
+                style="@style/Tarjeta"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp">
+
+                <LinearLayout
+                    android:id="@+id/listaAcciones"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:divider="@drawable/divisor"
+                    android:orientation="vertical"
+                    android:showDividers="middle" />
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Cliente: últimos movimientos -->
+            <LinearLayout
+                android:id="@+id/seccionUltimos"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        style="@style/TituloSeccion"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:text="@string/inicio_ultimos" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnVerTodos"
+                        style="@style/Widget.Material3.Button.TextButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/inicio_ver_todos" />
+                </LinearLayout>
+
+                <com.google.android.material.card.MaterialCardView
+                    style="@style/Tarjeta"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:id="@+id/listaUltimos"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:divider="@drawable/divisor"
+                            android:orientation="vertical"
+                            android:showDividers="middle" />
+
+                        <TextView
+                            android:id="@+id/lblSinMovimientos"
+                            style="@style/TextoSecundario"
+                            android:layout_width="match_parent"
+                            android:gravity="center"
+                            android:padding="24dp"
+                            android:text="@string/mov_vacio"
+                            android:visibility="gone" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+            </LinearLayout>
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

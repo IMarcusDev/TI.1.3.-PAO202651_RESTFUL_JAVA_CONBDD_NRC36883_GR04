@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="rectangle">
+            <gradient
+                android:angle="315"
+                android:endColor="@color/eureka_primario"
+                android:startColor="@color/eureka_primario_oscuro" />
+            <corners android:radius="20dp" />
+        </shape>
+    </item>
+    <!-- Detalle decorativo: círculo translúcido en la esquina superior derecha -->
+    <item
+        android:width="180dp"
+        android:height="180dp"
+        android:end="-60dp"
+        android:gravity="top|end"
+        android:top="-70dp">
+        <shape android:shape="oval">
+            <solid android:color="#14FFFFFF" />
+        </shape>
+    </item>
+</layer-list>

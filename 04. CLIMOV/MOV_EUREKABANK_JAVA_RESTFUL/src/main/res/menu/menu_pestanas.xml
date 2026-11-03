@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/pestana_inicio"
+        android:icon="@drawable/ic_inicio"
+        android:title="@string/pestana_inicio" />
+    <item
+        android:id="@+id/pestana_movimientos"
+        android:icon="@drawable/ic_lista"
+        android:title="@string/pestana_movimientos" />
+    <item
+        android:id="@+id/pestana_operaciones"
+        android:icon="@drawable/ic_operaciones"
+        android:title="@string/pestana_operaciones" />
+</menu>

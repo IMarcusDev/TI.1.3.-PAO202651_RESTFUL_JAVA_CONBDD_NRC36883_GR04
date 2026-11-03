@@ -1,0 +1,48 @@
+plugins {
+    id 'com.android.application' version '9.4.0'
+}
+
+// URL base del servidor REST. Se cambia en gradle.properties o con -Pservidor=http://<IP>:8080/WS_CON_UNI_JAVA_RESTFul/api/
+def servidor = project.findProperty('servidor') ?: 'http://10.0.2.2:8080/WS_CON_UNI_JAVA_RESTFul/api/'
+
+android {
+    namespace = 'ec.edu.monster'
+    compileSdk = 36
+
+    defaultConfig {
+        applicationId = 'com.espe.mov_eurekabank_java_restful'
+        minSdk = 24
+        targetSdk = 36
+        versionCode = 1
+        versionName = '1.0'
+
+        buildConfigField 'String', 'URL_SERVIDOR', "\"${servidor}\""
+    }
+
+    buildFeatures {
+        buildConfig = true
+    }
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+
+    sourceSets {
+        main {
+            java.filter.exclude('ec/edu/monster/pruebas/**')
+        }
+        test {
+            java.srcDir('src/main/java/ec/edu/monster/pruebas')
+        }
+    }
+}
+
+dependencies {
+    implementation 'com.google.android.material:material:1.13.0'
+    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
+
+    testImplementation 'junit:junit:4.13.2'
+    // org.json viene con Android; en las pruebas locales se usa la implementación real.
+    testImplementation 'org.json:json:20250517'
+}

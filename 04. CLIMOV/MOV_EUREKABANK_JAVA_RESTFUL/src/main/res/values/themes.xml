@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Tema.Eureka" parent="Theme.Material3.Light.NoActionBar">
+        <item name="colorPrimary">@color/eureka_primario</item>
+        <item name="colorOnPrimary">@color/blanco</item>
+        <item name="colorPrimaryContainer">@color/eureka_primario_suave</item>
+        <item name="colorOnPrimaryContainer">@color/eureka_primario</item>
+        <item name="colorSecondary">@color/eureka_primario</item>
+        <item name="colorSecondaryContainer">@color/eureka_primario_suave</item>
+        <item name="colorOnSecondaryContainer">@color/eureka_primario</item>
+        <item name="colorSurface">@color/blanco</item>
+        <item name="colorOnSurface">@color/texto_oscuro</item>
+        <item name="colorOnSurfaceVariant">@color/texto_secundario</item>
+        <item name="colorOutline">@color/borde_campo</item>
+        <item name="colorSurfaceContainer">@color/blanco</item>
+        <item name="colorSurfaceContainerLow">@color/blanco</item>
+        <item name="colorSurfaceContainerHigh">@color/blanco</item>
+        <item name="colorError">@color/texto_error</item>
+        <item name="android:colorBackground">@color/fondo_app</item>
+        <item name="android:windowBackground">@color/fondo_app</item>
+        <item name="android:textColorPrimary">@color/texto_oscuro</item>
+        <item name="android:textColorHint">@color/borde_campo</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:navigationBarColor">@color/blanco</item>
+        <item name="android:windowLightNavigationBar">true</item>
+        <item name="materialAlertDialogTheme">@style/Tema.Eureka.Dialogo</item>
+        <item name="bottomSheetDialogTheme">@style/Tema.Eureka.HojaInferior</item>
+        <item name="textInputStyle">@style/Campo</item>
+    </style>
+
+    <style name="Tema.Eureka.Dialogo" parent="ThemeOverlay.Material3.MaterialAlertDialog">
+        <item name="colorPrimary">@color/eureka_primario</item>
+        <item name="colorSurfaceContainerHigh">@color/blanco</item>
+    </style>
+
+    <style name="Tema.Eureka.HojaInferior" parent="ThemeOverlay.Material3.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/HojaInferior</item>
+        <item name="android:backgroundDimAmount">0.45</item>
+    </style>
+
+    <style name="HojaInferior" parent="Widget.Material3.BottomSheet.Modal">
+        <item name="backgroundTint">@color/blanco</item>
+        <item name="shapeAppearanceOverlay">@style/FormaHojaInferior</item>
+    </style>
+
+    <style name="FormaHojaInferior" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSizeTopLeft">24dp</item>
+        <item name="cornerSizeTopRight">24dp</item>
+        <item name="cornerSizeBottomLeft">0dp</item>
+        <item name="cornerSizeBottomRight">0dp</item>
+    </style>
+</resources>

@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">EurekaBank</string>
+    <string name="app_lema">Banca móvil · Cuentas de ahorro</string>
+
+    <!-- Sesión -->
+    <string name="cerrar_sesion">Cerrar sesión</string>
+    <string name="cerrar_sesion_pregunta">¿Desea cerrar la sesión?</string>
+    <string name="si">Sí</string>
+    <string name="no">No</string>
+    <string name="sesion">Sesión</string>
+    <string name="aceptar">Aceptar</string>
+    <string name="cancelar">Cancelar</string>
+    <string name="error_inesperado">Ocurrió un error inesperado. Intente de nuevo.</string>
+    <string name="reintentar">Reintentar</string>
+
+    <!-- Inicio de sesión (ECUD1) -->
+    <string name="login_titulo">Iniciar sesión</string>
+    <string name="login_subtitulo">Seleccione su perfil e ingrese sus credenciales.</string>
+    <string name="perfil_empleado">Empleado</string>
+    <string name="perfil_cliente">Cliente</string>
+    <string name="login_usuario">Usuario</string>
+    <string name="login_cuenta">Número de cuenta</string>
+    <string name="login_clave">Clave</string>
+    <string name="login_clave_cuenta">Clave de la cuenta</string>
+    <string name="login_ayuda_cuenta">8 dígitos</string>
+    <string name="login_ayuda_clave_cuenta">6 dígitos</string>
+    <string name="login_ingresar">Ingresar</string>
+    <string name="login_servidor">Servidor: %1$s</string>
+
+    <!-- Pestañas -->
+    <string name="pestana_inicio">Inicio</string>
+    <string name="pestana_movimientos">Movimientos</string>
+    <string name="pestana_operaciones">Operaciones</string>
+
+    <!-- Inicio -->
+    <string name="inicio_saludo">Hola,</string>
+    <string name="inicio_perfil">Perfil %1$s</string>
+    <string name="inicio_cuenta_ahorros">Cuenta de ahorros</string>
+    <string name="inicio_numero_cuenta">N.º %1$s</string>
+    <string name="inicio_saldo_disponible">Saldo disponible</string>
+    <string name="inicio_ventanilla">Ventanilla</string>
+    <string name="inicio_ventanilla_detalle">Consulte cualquier cuenta y registre depósitos, retiros y transferencias en nombre de los clientes.</string>
+    <string name="inicio_acciones">¿Qué desea hacer?</string>
+    <string name="inicio_ultimos">Últimos movimientos</string>
+    <string name="inicio_ver_todos">Ver todos</string>
+    <string name="inicio_cargando_cuenta">Cargando su cuenta…</string>
+
+    <string name="accion_consultar">Consultar movimientos</string>
+    <string name="accion_consultar_detalle_empleado">Datos y movimientos de cualquier cuenta</string>
+    <string name="accion_consultar_detalle_cliente">Historial de su cuenta</string>
+    <string name="accion_deposito_detalle">Acreditar dinero entregado en ventanilla</string>
+    <string name="accion_retiro_detalle">Debitar dinero de una cuenta</string>
+    <string name="accion_transferencia_detalle">Enviar dinero a otra cuenta del banco</string>
+
+    <!-- Movimientos (ECUD2) -->
+    <string name="mov_buscar_titulo">Consultar una cuenta</string>
+    <string name="mov_consultar">Consultar</string>
+    <string name="mov_inicial">Ingrese un número de cuenta para ver sus datos y movimientos.</string>
+    <string name="mov_cargando">Consultando movimientos…</string>
+    <string name="mov_titular">Titular</string>
+    <string name="mov_moneda">Moneda</string>
+    <string name="mov_saldo">Saldo</string>
+    <string name="mov_titulo_lista">Movimientos</string>
+    <plurals name="mov_cantidad">
+        <item quantity="one">%1$d movimiento</item>
+        <item quantity="other">%1$d movimientos</item>
+    </plurals>
+    <string name="mov_vacio">La cuenta no registra movimientos</string>
+    <string name="mov_numero_fecha">N.º %1$s · %2$s</string>
+    <string name="mov_referencia">Cuenta ref. %1$s</string>
+    <string name="mov_ingreso">Ingreso</string>
+    <string name="mov_salida">Salida</string>
+
+    <!-- Operaciones (ECUD3) -->
+    <string name="op_pregunta">¿Qué operación desea registrar?</string>
+    <string name="op_deposito">Depósito</string>
+    <string name="op_retiro">Retiro</string>
+    <string name="op_transferencia">Transferencia</string>
+    <string name="op_depositar">Depositar</string>
+    <string name="op_retirar">Retirar</string>
+    <string name="op_transferir">Transferir</string>
+    <string name="op_cuenta">Número de cuenta</string>
+    <string name="op_cuenta_origen">Cuenta de origen</string>
+    <string name="op_cuenta_destino">Cuenta de destino</string>
+    <string name="op_importe">Importe</string>
+    <string name="op_importe_ayuda">Hasta dos decimales</string>
+    <string name="op_clave_cuenta">Clave de la cuenta</string>
+    <string name="op_clave_cuenta_origen">Clave de la cuenta de origen</string>
+    <string name="op_desde_su_cuenta">Desde su cuenta</string>
+    <string name="op_saldo_disponible">Saldo disponible: %1$s</string>
+    <string name="op_confirmar_titulo">Confirmar operación</string>
+    <string name="op_confirmar_deposito">¿Depositar %1$s en la cuenta %2$s?</string>
+    <string name="op_confirmar_retiro">¿Retirar %1$s de la cuenta %2$s?</string>
+    <string name="op_confirmar_transferencia">¿Transferir %1$s de la cuenta %2$s a la cuenta %3$s?</string>
+    <string name="op_confirmar">Confirmar</string>
+    <string name="op_procesando">Registrando operación…</string>
+
+    <!-- Comprobante -->
+    <string name="comp_titulo">Comprobante</string>
+    <string name="comp_operacion">Operación</string>
+    <string name="comp_cuenta">Cuenta</string>
+    <string name="comp_cuenta_origen">Cuenta de origen</string>
+    <string name="comp_cuenta_destino">Cuenta de destino</string>
+    <string name="comp_importe">Importe</string>
+    <string name="comp_numero">N.º de movimiento</string>
+    <string name="comp_nuevo_saldo">Nuevo saldo</string>
+    <string name="comp_fecha">Fecha</string>
+    <string name="comp_listo">Listo</string>
+</resources>
