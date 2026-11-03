@@ -10,21 +10,19 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.BorderFactory;
-import javax.swing.DefaultListCellRenderer;
 import javax.swing.Icon;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import javax.swing.border.Border;
@@ -34,7 +32,7 @@ import javax.swing.border.Border;
  */
 final class Estilos {
 
-    static final String TITULO_VENTANA = "Conversión de Unidades Monster";
+    static final String TITULO_VENTANA = "EurekaBank";
     static final String ERROR_INESPERADO = "Ocurrió un error inesperado";
 
     static final Color PRIMARIO = new Color(0x1F4E79);
@@ -45,6 +43,7 @@ final class Estilos {
     static final Color FONDO_RESULTADO = new Color(0xE8F0F8);
     static final Color EXITO = new Color(0x15803D);
     static final Color ERROR = new Color(0xB91C1C);
+    static final Color APAGADO = new Color(0x9CA3AF);
     static final Color BLANCO = Color.WHITE;
 
     static final Font FUENTE = new Font(Font.SANS_SERIF, Font.PLAIN, 15);
@@ -52,6 +51,7 @@ final class Estilos {
     static final Font FUENTE_ETIQUETA = new Font(Font.SANS_SERIF, Font.BOLD, 14);
     static final Font FUENTE_PEQUENA = new Font(Font.SANS_SERIF, Font.BOLD, 13);
     static final Font FUENTE_TITULO = new Font(Font.SANS_SERIF, Font.BOLD, 26);
+    static final Font FUENTE_SUBTITULO = new Font(Font.SANS_SERIF, Font.BOLD, 18);
     static final Font FUENTE_RESULTADO = new Font(Font.SANS_SERIF, Font.BOLD, 24);
 
     private static final Logger LOG = Logger.getLogger(Estilos.class.getName());
@@ -66,9 +66,23 @@ final class Estilos {
         return etiqueta;
     }
 
+    static JLabel subtitulo(String texto) {
+        JLabel etiqueta = new JLabel(texto);
+        etiqueta.setFont(FUENTE_SUBTITULO);
+        etiqueta.setForeground(PRIMARIO);
+        return etiqueta;
+    }
+
     static JLabel etiqueta(String texto) {
         JLabel etiqueta = new JLabel(texto);
         etiqueta.setFont(FUENTE_ETIQUETA);
+        etiqueta.setForeground(TEXTO);
+        return etiqueta;
+    }
+
+    static JLabel texto(String texto) {
+        JLabel etiqueta = new JLabel(texto);
+        etiqueta.setFont(FUENTE);
         etiqueta.setForeground(TEXTO);
         return etiqueta;
     }
@@ -94,6 +108,48 @@ final class Estilos {
         return boton;
     }
 
+    static JButton botonSecundario(String texto) {
+        JButton boton = new JButton(texto);
+        boton.setFont(FUENTE_NEGRITA);
+        boton.setForeground(PRIMARIO);
+        boton.setBackground(BLANCO);
+        boton.setOpaque(true);
+        boton.setContentAreaFilled(true);
+        boton.setBorderPainted(true);
+        boton.setFocusPainted(false);
+        boton.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(BORDE_ENTRADA),
+                BorderFactory.createEmptyBorder(7, 15, 7, 15)));
+        boton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        return boton;
+    }
+
+    /** Flat, left aligned button used by the sidebar navigation. */
+    static JButton botonNavegacion(String texto) {
+        JButton boton = new JButton(texto);
+        boton.setFont(FUENTE);
+        boton.setForeground(TEXTO);
+        boton.setBackground(BLANCO);
+        boton.setOpaque(true);
+        boton.setContentAreaFilled(true);
+        boton.setBorderPainted(false);
+        boton.setFocusPainted(false);
+        boton.setHorizontalAlignment(SwingConstants.LEFT);
+        boton.setBorder(BorderFactory.createEmptyBorder(8, 14, 8, 14));
+        boton.setMaximumSize(new Dimension(Integer.MAX_VALUE, 36));
+        boton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        return boton;
+    }
+
+    static JPanel panelTarjeta() {
+        JPanel panel = new JPanel();
+        panel.setBackground(BLANCO);
+        panel.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(BORDE),
+                BorderFactory.createEmptyBorder(16, 16, 16, 16)));
+        return panel;
+    }
+
     static Border bordeEntrada() {
         return BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(BORDE_ENTRADA),
@@ -107,28 +163,6 @@ final class Estilos {
         componente.setBorder(bordeEntrada());
         componente.setPreferredSize(new Dimension(220, 36));
         return componente;
-    }
-
-    /** Combo that keeps server values in its model and shows {@code texto(valor)}. */
-    static JComboBox<String> combo(Function<String, String> texto) {
-        JComboBox<String> combo = entrada(new JComboBox<>());
-        combo.setBorder(BorderFactory.createLineBorder(BORDE_ENTRADA));
-        combo.setRenderer(new DefaultListCellRenderer() {
-            @Override
-            public Component getListCellRendererComponent(JList<?> lista, Object valor, int indice,
-                    boolean seleccionado, boolean foco) {
-                String visible = valor == null ? " " : texto.apply((String) valor);
-                super.getListCellRendererComponent(lista, visible, indice, seleccionado, foco);
-                setBorder(BorderFactory.createEmptyBorder(4, 10, 4, 10));
-                return this;
-            }
-        });
-        return combo;
-    }
-
-    /** "Metro (m)", or just the symbol when no name is known. */
-    static String unidadVisible(String simbolo, String nombre) {
-        return nombre.equals(simbolo) ? simbolo : nombre + " (" + simbolo + ")";
     }
 
     /** Small round icon used by the server status line. */

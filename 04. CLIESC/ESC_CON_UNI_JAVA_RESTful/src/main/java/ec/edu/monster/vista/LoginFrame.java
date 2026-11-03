@@ -57,8 +57,10 @@ public class LoginFrame extends JFrame implements LoginVista {
         c.fill = GridBagConstraints.HORIZONTAL;
         c.weightx = 1;
 
+        c.insets = new Insets(0, 0, 6, 0);
+        formulario.add(Estilos.titulo("EurekaBank"), c);
         c.insets = new Insets(0, 0, 22, 0);
-        formulario.add(Estilos.titulo("Iniciar sesión"), c);
+        formulario.add(Estilos.texto("Banca en línea · Servicio RESTful / Java"), c);
         c.insets = new Insets(0, 0, 8, 0);
         formulario.add(Estilos.etiqueta("Usuario"), c);
         c.insets = new Insets(0, 0, 22, 0);

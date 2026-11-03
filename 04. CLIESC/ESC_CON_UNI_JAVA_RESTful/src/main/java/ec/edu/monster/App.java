@@ -1,11 +1,15 @@
 package ec.edu.monster;
 
-import ec.edu.monster.controlador.CatalogoControlador;
-import ec.edu.monster.controlador.ConversionControlador;
 import ec.edu.monster.controlador.EstadoControlador;
 import ec.edu.monster.controlador.LoginControlador;
-import ec.edu.monster.modelo.ConversorServicio;
+import ec.edu.monster.controlador.MovimientoControlador;
+import ec.edu.monster.modelo.Comprobantes;
+import ec.edu.monster.modelo.Configuracion;
 import ec.edu.monster.modelo.EstadoServidor;
+import ec.edu.monster.modelo.LoginServicio;
+import ec.edu.monster.modelo.LoginServicioRest;
+import ec.edu.monster.modelo.MovimientoServicio;
+import ec.edu.monster.modelo.MovimientoServicioRest;
 import ec.edu.monster.modelo.Sesion;
 import ec.edu.monster.vista.LoginFrame;
 import ec.edu.monster.vista.PrincipalFrame;
@@ -18,14 +22,16 @@ import javax.swing.SwingUtilities;
  */
 public final class App {
 
-    private static final String TITULO = "Conversión de Unidades Monster";
+    private static final String TITULO = "EurekaBank";
     private static final String SIN_CONEXION = "No se pudo conectar con el servidor";
 
-    private final ConversorServicio servicio;
-    private final EstadoServidor estado = new EstadoServidor();
+    private final Configuracion configuracion;
+    private final Sesion sesion = new Sesion();
+    private final EstadoServidor estado;
 
-    private App(ConversorServicio servicio) {
-        this.servicio = servicio;
+    private App(Configuracion configuracion) {
+        this.configuracion = configuracion;
+        this.estado = new EstadoServidor(configuracion);
     }
 
     public static void main(String[] args) {
@@ -33,38 +39,71 @@ public final class App {
     }
 
     private static void iniciar() {
-        ConversorServicio servicio;
+        Configuracion configuracion;
         try {
-            // Building the HTTP client can fail (e.g. invalid configuration); fail gracefully.
-            servicio = ConversorServicio.crear(new Sesion());
+            configuracion = Configuracion.cargar();
         } catch (RuntimeException e) {
-            JOptionPane.showOptionDialog(null, SIN_CONEXION, TITULO,
-                    JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE, null,
-                    new Object[] {"Aceptar"}, "Aceptar");
+            error(e.getMessage());
             return;
         }
-        new App(servicio).mostrarLogin();
+        new App(configuracion).mostrarLogin();
     }
 
     private void mostrarLogin() {
+        LoginServicio servicio;
+        try {
+            // A malformed address in config.properties fails here; report it instead of crashing.
+            servicio = new LoginServicioRest(configuracion);
+        } catch (RuntimeException | LinkageError e) {
+            error(SIN_CONEXION);
+            return;
+        }
         LoginFrame login = new LoginFrame(this::mostrarPrincipal);
-        new LoginControlador(login, servicio);
+        new LoginControlador(login, servicio, sesion);
         new EstadoControlador(login.getIndicadorEstado(), estado);
         login.setVisible(true);
     }
 
     private void mostrarPrincipal() {
-        // The frame disposes itself after this callback runs.
-        PrincipalFrame principal = new PrincipalFrame(() -> {
-            try {
-                servicio.cerrarSesion();
-            } finally {
-                mostrarLogin();
-            }
-        });
-        new ConversionControlador(principal.getConversionPanel(), servicio);
-        new CatalogoControlador(principal.getCatalogoPanel(), servicio);
-        new EstadoControlador(principal.getIndicadorEstado(), estado);
+        MovimientoServicio servicio;
+        PrincipalFrame principal;
+        try {
+            servicio = new MovimientoServicioRest(configuracion);
+            principal = new PrincipalFrame(sesion.getNombre(), sesion.getTipoUsuario(), this::cerrarSesion);
+        } catch (RuntimeException | LinkageError e) {
+            error(SIN_CONEXION);
+            return;
+        }
+        conectar(principal, servicio);
         principal.setVisible(true);
+    }
+
+    private void conectar(PrincipalFrame principal, MovimientoServicio servicio) {
+        new MovimientoControlador(principal.getDepositoPanel(), sesion,
+                form -> "¿Depositar " + form.getImporteFormateado() + " en la cuenta " + form.getCuenta()
+                        + " del empleado " + form.getEmpleado() + "?",
+                (token, form) -> Comprobantes.deposito(form,
+                        servicio.deposito(token, form.getEmpleado(), form.getCuenta(), form.getImporte())));
+
+        new MovimientoControlador(principal.getRetiroPanel(), sesion,
+                form -> "¿Retirar " + form.getImporteFormateado() + " de la cuenta " + form.getCuenta() + "?",
+                (token, form) -> Comprobantes.retiro(form,
+                        servicio.retiro(token, form.getCuenta(), "", form.getImporte())));
+
+        new MovimientoControlador(principal.getTransferenciaPanel(), sesion,
+                form -> "¿Transferir " + form.getImporteFormateado() + " de la cuenta " + form.getOrigen()
+                        + " a la cuenta " + form.getDestino() + "?",
+                (token, form) -> Comprobantes.transferencia(form,
+                        servicio.transferencia(token, form.getOrigen(), form.getDestino(), form.getImporte())));
+    }
+
+    private void cerrarSesion() {
+        sesion.cerrar();
+        mostrarLogin();
+    }
+
+    private static void error(String mensaje) {
+        JOptionPane.showOptionDialog(null, mensaje, TITULO, JOptionPane.DEFAULT_OPTION,
+                JOptionPane.ERROR_MESSAGE, null, new Object[] {"Aceptar"}, "Aceptar");
     }
 }

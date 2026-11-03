@@ -5,40 +5,58 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import ec.edu.monster.modelo.DatosSesion;
 import ec.edu.monster.modelo.Sesion;
 import org.junit.jupiter.api.Test;
 
 class SesionTest {
-     //Sesión empieza como inactiva antes de ingresar las credenciales.
+
+    private static final DatosSesion ADMIN = new DatosSesion("Administrador", "Empleado", "token-1");
+
     @Test
-    void startsInactive() {
+    void startsAndClosesTheSession() {
         Sesion sesion = new Sesion();
 
         assertFalse(sesion.estaActiva());
-        assertNull(sesion.getToken());
-    }
-    // Mantener sesion y tokens despues de iniciar sesión
-    @Test
-    void keepsUserAndTokenAfterStart() {
-        Sesion sesion = new Sesion();
-
-        sesion.iniciar("user", "abc123");
+        sesion.iniciar("admin", ADMIN);
 
         assertTrue(sesion.estaActiva());
-        assertEquals("user", sesion.getUsuario());
-        assertEquals("abc123", sesion.getToken());
-    }
-    
-     //Limpiar estado y cierra sesión 
-    @Test
-    void clearsStateOnClose() {
-        Sesion sesion = new Sesion();
-        sesion.iniciar("user", "abc123");
+        assertEquals("admin", sesion.getUsuario());
+        assertEquals("Administrador", sesion.getNombre());
+        assertEquals("Empleado", sesion.getTipoUsuario());
+        assertEquals("token-1", sesion.getToken());
 
         sesion.cerrar();
 
         assertFalse(sesion.estaActiva());
-        assertNull(sesion.getUsuario());
         assertNull(sesion.getToken());
+        assertNull(sesion.getTipoUsuario());
+    }
+
+    @Test
+    void onlyTheEmployeeRoleCanOperate() {
+        Sesion empleado = new Sesion();
+        empleado.iniciar("admin", ADMIN);
+        assertTrue(empleado.esEmpleado());
+
+        Sesion cliente = new Sesion();
+        cliente.iniciar("cliente", new DatosSesion("Cliente", "Cliente", "token-2"));
+        assertFalse(cliente.esEmpleado());
+    }
+
+    @Test
+    void blankTokenMeansTheSessionIsNotActive() {
+        Sesion sesion = new Sesion();
+        sesion.iniciar("admin", new DatosSesion("Administrador", "Empleado", " "));
+
+        assertFalse(sesion.estaActiva());
+    }
+
+    @Test
+    void emptyNameFallsBackToTheUser() {
+        Sesion sesion = new Sesion();
+        sesion.iniciar("admin", new DatosSesion("", "Empleado", "token-1"));
+
+        assertEquals("admin", sesion.getNombre());
     }
 }

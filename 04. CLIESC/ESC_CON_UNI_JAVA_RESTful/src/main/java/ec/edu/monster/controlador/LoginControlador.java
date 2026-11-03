@@ -1,7 +1,9 @@
 package ec.edu.monster.controlador;
 
-import ec.edu.monster.modelo.ConversorServicio;
+import ec.edu.monster.modelo.DatosSesion;
+import ec.edu.monster.modelo.LoginServicio;
 import ec.edu.monster.modelo.ServicioException;
+import ec.edu.monster.modelo.Sesion;
 import ec.edu.monster.vista.LoginVista;
 
 /**
@@ -13,11 +15,13 @@ public class LoginControlador {
     private static final String CREDENCIALES_VACIAS = "Ingrese usuario y contraseña";
 
     private final LoginVista vista;
-    private final ConversorServicio servicio;
+    private final LoginServicio servicio;
+    private final Sesion sesion;
 
-    public LoginControlador(LoginVista vista, ConversorServicio servicio) {
+    public LoginControlador(LoginVista vista, LoginServicio servicio, Sesion sesion) {
         this.vista = vista;
         this.servicio = servicio;
+        this.sesion = sesion;
         vista.alIngresar(this::ingresar);
     }
 
@@ -29,7 +33,8 @@ public class LoginControlador {
             return;
         }
         try {
-            servicio.iniciarSesion(usuario.trim(), clave);
+            DatosSesion datos = servicio.iniciarSesion(usuario.trim(), clave);
+            sesion.iniciar(usuario.trim(), datos);
             vista.abrirMenu();
         } catch (ServicioException e) {
             vista.mostrarError(e.getMessage());

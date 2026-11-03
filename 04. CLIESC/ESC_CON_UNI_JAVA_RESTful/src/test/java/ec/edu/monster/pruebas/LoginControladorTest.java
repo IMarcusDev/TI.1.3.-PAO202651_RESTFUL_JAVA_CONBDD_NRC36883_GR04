@@ -2,135 +2,62 @@ package ec.edu.monster.pruebas;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import ec.edu.monster.controlador.LoginControlador;
-import ec.edu.monster.modelo.ConversorServicio;
+import ec.edu.monster.dobles.LoginServicioFalso;
+import ec.edu.monster.dobles.LoginVistaFalsa;
 import ec.edu.monster.modelo.Sesion;
-import ec.edu.monster.vista.LoginVista;
-import ec.edu.monster.modelo.dto.CatalogResponseDTO;
-import ec.edu.monster.modelo.http.ConversorApi;
-import ec.edu.monster.modelo.dto.ConversorResponseDTO;
-import ec.edu.monster.modelo.enums.EstadosEnum;
-import ec.edu.monster.modelo.dto.LoginResponseDTO;
-import ec.edu.monster.modelo.http.LoginApi;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class LoginControladorTest {
 
+    private final LoginVistaFalsa vista = new LoginVistaFalsa();
+    private final LoginServicioFalso servicio = new LoginServicioFalso();
     private final Sesion sesion = new Sesion();
-    private final VistaLoginFalsa vista = new VistaLoginFalsa();
-    private int llamadasAlServidor;
 
-    @Test
-    void showsErrorAndSkipsServerWhenCredentialsAreBlank() {
-        new LoginControlador(vista, servicio((usuario, clave) -> loginOk()));
-        vista.usuario = "  ";
-        vista.clave = "";
-
-        vista.presionarIngresar();
-
-        assertEquals("Ingrese usuario y contraseña", vista.error);
-        assertFalse(vista.menuAbierto);
-        assertEquals(0, llamadasAlServidor);
+    @BeforeEach
+    void conectar() {
+        new LoginControlador(vista, servicio, sesion);
     }
 
     @Test
-    void opensMenuWhenLoginSucceeds() {
-        new LoginControlador(vista, servicio((usuario, clave) -> loginOk()));
-        vista.usuario = "user";
-        vista.clave = "1234";
+    void blankCredentialsDoNotCallTheService() {
+        vista.escribir(" ", "");
 
-        vista.presionarIngresar();
+        vista.ingresar();
 
-        assertTrue(vista.menuAbierto);
-        assertNull(vista.error);
-        assertEquals("user", sesion.getUsuario());
+        assertEquals("Ingrese usuario y contraseña", vista.getError());
+        assertEquals(0, servicio.getLlamadas());
+        assertFalse(vista.isMenuAbierto());
     }
 
     @Test
-    void showsServerMessageWhenLoginIsRejected() {
-        new LoginControlador(vista, servicio((usuario, clave) -> loginError("Credenciales incorrectas")));
-        vista.usuario = "user";
-        vista.clave = "mala";
+    void successfulLoginOpensTheMenuAndStoresTheSession() {
+        vista.escribir(" admin ", "1234");
 
-        vista.presionarIngresar();
+        vista.ingresar();
 
-        assertEquals("Credenciales incorrectas", vista.error);
-        assertFalse(vista.menuAbierto);
+        assertEquals("admin", servicio.getUsuarioRecibido());
+        assertEquals("1234", servicio.getClaveRecibida());
+        assertTrue(vista.isMenuAbierto());
+        assertTrue(sesion.estaActiva());
+        assertTrue(sesion.esEmpleado());
+        assertEquals("Administrador", sesion.getNombre());
+        assertEquals(LoginServicioFalso.SESION.token(), sesion.getToken());
     }
 
-    private ConversorServicio servicio(LoginApi login) {
-        LoginApi contador = (usuario, clave) -> {
-            llamadasAlServidor++;
-            return login.login(usuario, clave);
-        };
-        return new ConversorServicio(contador, new ConversorSinUso(), sesion);
-    }
+    @Test
+    void serverErrorIsShownAndTheMenuStaysClosed() {
+        servicio.fallarCon("Contraseña incorrecta");
+        vista.escribir("admin", "mala");
 
-    private static LoginResponseDTO loginOk() {
-        LoginResponseDTO dto = new LoginResponseDTO();
-        dto.setEstado(EstadosEnum.OK);
-        dto.setToken("tok-1");
-        return dto;
-    }
+        vista.ingresar();
 
-    private static LoginResponseDTO loginError(String mensaje) {
-        LoginResponseDTO dto = new LoginResponseDTO();
-        dto.setEstado(EstadosEnum.ERROR);
-        dto.setMensaje(mensaje);
-        return dto;
-    }
-
-    private static final class VistaLoginFalsa implements LoginVista {
-
-        private String usuario = "";
-        private String clave = "";
-        private String error;
-        private boolean menuAbierto;
-        private Runnable accionIngresar;
-
-        void presionarIngresar() {
-            accionIngresar.run();
-        }
-
-        @Override
-        public String getUsuario() {
-            return usuario;
-        }
-
-        @Override
-        public String getClave() {
-            return clave;
-        }
-
-        @Override
-        public void mostrarError(String mensaje) {
-            error = mensaje;
-        }
-
-        @Override
-        public void abrirMenu() {
-            menuAbierto = true;
-        }
-
-        @Override
-        public void alIngresar(Runnable accion) {
-            accionIngresar = accion;
-        }
-    }
-
-    private static final class ConversorSinUso implements ConversorApi {
-
-        @Override
-        public ConversorResponseDTO convert(String token, String type, double value, String from, String to) {
-            throw new AssertionError("Login must not call the converter");
-        }
-
-        @Override
-        public CatalogResponseDTO catalog(String token, String type) {
-            throw new AssertionError("Login must not call the catalog");
-        }
+        assertEquals("Contraseña incorrecta", vista.getError());
+        assertEquals(1, vista.getErroresMostrados());
+        assertFalse(vista.isMenuAbierto());
+        assertFalse(sesion.estaActiva());
     }
 }
