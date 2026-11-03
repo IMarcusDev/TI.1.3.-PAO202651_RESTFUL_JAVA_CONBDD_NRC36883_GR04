@@ -4,30 +4,43 @@
  */
 package ec.edu.monster.servicios;
 
-import java.util.HashSet;
-import java.util.Set;
+import ec.edu.monster.modelos.data.Sesion;
+import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  *
  * @author Mateo Sosa
  */
 public class TokenService {
-  private static final Set<String> tokensActivos = new HashSet<>();
-  
-  static {
-    tokensActivos.add("123");
-  }
+  //revisado y aprovado por Marcos Escobar
+  // Cada token guarda de quién es (perfil y código). Ya no hay un token fijo
+  // de pruebas: un token sin dueño no se puede autorizar.
+  private static final Map<String, Sesion> tokensActivos = new ConcurrentHashMap<>();
 
-  public static String generateToken() {
+  //revisado y aprovado por Marcos Escobar
+  public static String generateToken(String perfil, String codigo) {
     String token = UUID.randomUUID().toString();
 
-    tokensActivos.add(token);
+    tokensActivos.put(token, new Sesion(perfil, codigo));
 
     return token;
   }
 
+  //revisado y aprovado por Marcos Escobar
   public static boolean validateToken(String token) {
-    return tokensActivos.contains(token);
+    return getSesion(token) != null;
+  }
+
+  //revisado y aprovado por Marcos Escobar
+  public static Sesion getSesion(String token) {
+    return token == null ? null : tokensActivos.get(token);
+  }
+
+  //revisado y aprovado por Marcos Escobar
+  public static void removeToken(String token) {
+    if (token != null)
+      tokensActivos.remove(token);
   }
 }

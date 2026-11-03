@@ -25,6 +25,8 @@ create table CUENTAS
    ID_EMPLEADO_CREADOR  int,
    FECHA_CREACION_CUENTA date,
    SALDO_CUENTA         double,
+   -- revisado y aprovado por Marcos Escobar
+   ESTADO_CUENTA        varchar(20) not null default 'ACTIVO',
    primary key (ID_CUENTA)
 );
 

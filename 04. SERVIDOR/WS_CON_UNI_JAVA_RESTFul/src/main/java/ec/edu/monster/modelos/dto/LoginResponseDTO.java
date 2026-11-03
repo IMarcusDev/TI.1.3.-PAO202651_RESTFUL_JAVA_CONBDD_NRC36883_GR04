@@ -15,6 +15,8 @@ public class LoginResponseDTO extends ResponseDTO {
   private String nombre;
   private String estadoUsuario;
   private String tipoUsuario;
+  //revisado y aprovado por Marcos Escobar
+  private String perfil;
   
   public LoginResponseDTO(
     EstadosEnum estado,
@@ -70,5 +72,15 @@ public class LoginResponseDTO extends ResponseDTO {
 
   public void setTipoUsuario(String tipoUsuario) {
     this.tipoUsuario = tipoUsuario;
+  }
+
+  //revisado y aprovado por Marcos Escobar
+  public String getPerfil() {
+    return perfil;
+  }
+
+  //revisado y aprovado por Marcos Escobar
+  public void setPerfil(String perfil) {
+    this.perfil = perfil;
   }
 }

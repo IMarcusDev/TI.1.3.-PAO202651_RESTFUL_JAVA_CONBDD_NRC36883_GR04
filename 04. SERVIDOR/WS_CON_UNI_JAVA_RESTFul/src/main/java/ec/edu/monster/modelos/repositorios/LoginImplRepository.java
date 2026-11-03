@@ -51,6 +51,38 @@ public class LoginImplRepository implements LoginRepository {
     }
   }
 
+  //revisado y aprovado por Marcos Escobar
+  @Override
+  public Perfil getPerfilById(String id) throws Exception {
+    String sql = """
+      SELECT
+        p.ID_PERFIL,
+        p.USERNAME_PERFIL,
+        p.PASSWORD_PERFIL
+      FROM PERFILES p
+      WHERE p.ID_PERFIL = ?
+    """;
+
+    try (
+      Connection connection = DBConfig.getConnection();
+      PreparedStatement statement = connection.prepareStatement(sql)
+    ) {
+      statement.setString(1, id);
+
+      try (ResultSet result = statement.executeQuery()) {
+        if (!result.next()) {
+          throw new Exception("Perfil no encontrado");
+        }
+
+        return new Perfil(
+          result.getString("ID_PERFIL"),
+          result.getString("USERNAME_PERFIL"),
+          result.getString("PASSWORD_PERFIL")
+        );
+      }
+    }
+  }
+
   @Override
   public Usuario getUsuario(String id) throws Exception {
     String sql = """

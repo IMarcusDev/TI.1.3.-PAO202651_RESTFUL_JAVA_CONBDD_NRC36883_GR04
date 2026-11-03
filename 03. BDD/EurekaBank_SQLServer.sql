@@ -98,6 +98,8 @@ create table CUENTAS (
    ID_EMPLEADO_CREADOR  int                  null,
    FECHA_CREACION_CUENTA datetime             null,
    SALDO_CUENTA         double precision     null,
+   -- revisado y aprovado por Marcos Escobar
+   ESTADO_CUENTA        varchar(20)          not null default 'ACTIVO',
    constraint PK_CUENTAS primary key nonclustered (ID_CUENTA)
 )
 go

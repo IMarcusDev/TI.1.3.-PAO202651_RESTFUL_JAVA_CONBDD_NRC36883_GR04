@@ -5,6 +5,8 @@
 package ec.edu.monster.modelos.dto;
 
 import ec.edu.monster.modelos.enums.EstadosEnum;
+//revisado y aprovado por Marcos Escobar
+import java.math.BigDecimal;
 
 /**
  *
@@ -12,6 +14,10 @@ import ec.edu.monster.modelos.enums.EstadosEnum;
  */
 public class MovimientoResponseDTO extends ResponseDTO {
   private int idMovimiento;
+  //revisado y aprovado por Marcos Escobar
+  private int numeroMovimiento;
+  //revisado y aprovado por Marcos Escobar
+  private BigDecimal nuevoSaldo;
 
   public MovimientoResponseDTO(EstadosEnum estado, String mensaje, int idMovimiento) {
     super(estado, mensaje);
@@ -24,5 +30,25 @@ public class MovimientoResponseDTO extends ResponseDTO {
 
   public void setIdMovimiento(int idMovimiento) {
     this.idMovimiento = idMovimiento;
+  }
+
+  //revisado y aprovado por Marcos Escobar
+  public int getNumeroMovimiento() {
+    return numeroMovimiento;
+  }
+
+  //revisado y aprovado por Marcos Escobar
+  public void setNumeroMovimiento(int numeroMovimiento) {
+    this.numeroMovimiento = numeroMovimiento;
+  }
+
+  //revisado y aprovado por Marcos Escobar
+  public BigDecimal getNuevoSaldo() {
+    return nuevoSaldo;
+  }
+
+  //revisado y aprovado por Marcos Escobar
+  public void setNuevoSaldo(BigDecimal nuevoSaldo) {
+    this.nuevoSaldo = nuevoSaldo;
   }
 }

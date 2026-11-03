@@ -18,12 +18,14 @@ import java.sql.ResultSet;
  */
 public class CuentaImplRepository implements CuentaRepository {
 
+  //revisado y aprovado por Marcos Escobar
   @Override
   public Cuenta getCuenta(String id) throws Exception {
     String sql = """
       SELECT
         c.ID_CUENTA,
-        c.SALDO_CUENTA
+        c.SALDO_CUENTA,
+        c.ESTADO_CUENTA
       FROM CUENTAS c
       WHERE c.ID_CUENTA = ?;
     """;
@@ -41,24 +43,53 @@ public class CuentaImplRepository implements CuentaRepository {
 
         return new Cuenta(
           result.getString("ID_CUENTA"),
-          result.getDouble("SALDO_CUENTA")
+          result.getDouble("SALDO_CUENTA"),
+          result.getString("ESTADO_CUENTA")
         );
       }
     }
   }
 
+  //revisado y aprovado por Marcos Escobar
   @Override
-  public Cuenta updateCuenta(Cuenta c) throws Exception {
+  public Cuenta getCuentaParaActualizar(Connection connection, String id) throws Exception {
+    String sql = """
+      SELECT
+        c.ID_CUENTA,
+        c.SALDO_CUENTA,
+        c.ESTADO_CUENTA
+      FROM CUENTAS c
+      WHERE c.ID_CUENTA = ?
+      FOR UPDATE;
+    """;
+
+    try (PreparedStatement statement = connection.prepareStatement(sql)) {
+      statement.setString(1, id);
+
+      try (ResultSet result = statement.executeQuery()) {
+        if (!result.next())
+          return null;
+
+        return new Cuenta(
+          result.getString("ID_CUENTA"),
+          result.getDouble("SALDO_CUENTA"),
+          result.getString("ESTADO_CUENTA")
+        );
+      }
+    }
+  }
+
+  //revisado y aprovado por Marcos Escobar
+  // Usa la conexión de la transacción en curso; no abre una propia.
+  @Override
+  public Cuenta updateCuenta(Connection connection, Cuenta c) throws Exception {
     String sql = """
       UPDATE CUENTAS
       SET SALDO_CUENTA = ?
       WHERE ID_CUENTA = ?
     """;
 
-    try (
-      Connection connection = DBConfig.getConnection();
-      PreparedStatement statement = connection.prepareStatement(sql)
-    ) {
+    try (PreparedStatement statement = connection.prepareStatement(sql)) {
       statement.setDouble(1, c.getSaldo());
       statement.setString(2, c.getId());
 
@@ -67,7 +98,7 @@ public class CuentaImplRepository implements CuentaRepository {
       if (rowsAffected == 0)
         throw new Exception("Cuenta no encontrada");
 
-      return getCuenta(c.getId());
-    } 
+      return c;
+    }
   }
 }

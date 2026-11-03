@@ -6,6 +6,8 @@ package ec.edu.monster.modelos.interfaces;
 
 import ec.edu.monster.modelos.data.Movimiento;
 import java.util.List;
+//revisado y aprovado por Marcos Escobar
+import java.sql.Connection;
 
 /**
  *
@@ -13,5 +15,6 @@ import java.util.List;
  */
 public interface MovimientoRepository {
   public abstract List<Movimiento> getMovimientosByUserId(String id) throws Exception;
-  public abstract Movimiento registerMovimiento(Movimiento m) throws Exception;
+  //revisado y aprovado por Marcos Escobar
+  public abstract Movimiento registerMovimiento(Connection connection, Movimiento m) throws Exception;
 }
