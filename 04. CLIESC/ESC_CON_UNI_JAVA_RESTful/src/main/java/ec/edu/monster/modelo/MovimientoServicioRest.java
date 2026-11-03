@@ -1,6 +1,7 @@
 package ec.edu.monster.modelo;
 
 import java.math.BigDecimal;
+import java.time.Duration;
 import org.json.JSONObject;
 
 /**
@@ -12,11 +13,20 @@ public class MovimientoServicioRest implements MovimientoServicio {
 
     private static final String SIN_ID = "El servidor no devolvió el número de movimiento";
 
+    private static final String SIN_RESPUESTA_A_TIEMPO = "El servidor no respondió a tiempo. La operación pudo "
+            + "haberse registrado: verifique el saldo antes de volver a intentarlo";
+
     private final Configuracion configuracion;
-    private final ClienteRest cliente = new ClienteRest();
+    private final ClienteRest cliente;
 
     public MovimientoServicioRest(Configuracion configuracion) {
+        this(configuracion, ClienteRest.ESPERA_RESPUESTA);
+    }
+
+    /** Same as above, waiting at most {@code esperaRespuesta} for each answer. */
+    public MovimientoServicioRest(Configuracion configuracion, Duration esperaRespuesta) {
         this.configuracion = configuracion;
+        this.cliente = new ClienteRest(esperaRespuesta, SIN_RESPUESTA_A_TIEMPO);
     }
 
     @Override

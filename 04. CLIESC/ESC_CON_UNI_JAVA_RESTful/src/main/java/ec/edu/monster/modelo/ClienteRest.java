@@ -3,6 +3,8 @@ package ec.edu.monster.modelo;
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
+import java.net.http.HttpConnectTimeoutException;
+import java.net.http.HttpTimeoutException;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
@@ -18,7 +20,8 @@ import org.json.JSONObject;
 final class ClienteRest {
 
     private static final Duration ESPERA_CONEXION = Duration.ofSeconds(5);
-    private static final Duration ESPERA_RESPUESTA = Duration.ofSeconds(15);
+    /** Default time to wait for an answer once the request was sent. */
+    static final Duration ESPERA_RESPUESTA = Duration.ofSeconds(15);
     private static final String SIN_CONEXION = "No se pudo conectar con el servidor: ";
     private static final String SIN_RESPUESTA = "El servidor no devolvió respuesta";
     private static final String CON_ERROR = "El servidor respondió con un error (HTTP %d)";
@@ -26,6 +29,17 @@ final class ClienteRest {
 
     // HttpClient is thread-safe and expensive to build: one per service
     private final HttpClient http = HttpClient.newBuilder().connectTimeout(ESPERA_CONEXION).build();
+    private final Duration esperaRespuesta;
+    private final String sinRespuestaATiempo;
+
+    /**
+     * @param sinRespuestaATiempo message for a request that was sent but not answered in time;
+     *                            the server may have processed it, so it must not say "could not connect"
+     */
+    ClienteRest(Duration esperaRespuesta, String sinRespuestaATiempo) {
+        this.esperaRespuesta = esperaRespuesta;
+        this.sinRespuestaATiempo = sinRespuestaATiempo;
+    }
 
     /**
      * POSTs {@code cuerpo} to {@code endpoint}, adding the raw token in {@code Authorization}
@@ -33,7 +47,7 @@ final class ClienteRest {
      */
     JSONObject post(String endpoint, String token, JSONObject cuerpo) throws ServicioException {
         HttpRequest.Builder peticion = HttpRequest.newBuilder(URI.create(endpoint))
-                .timeout(ESPERA_RESPUESTA)
+                .timeout(esperaRespuesta)
                 .header("Content-Type", "application/json; charset=UTF-8")
                 .header("Accept", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(cuerpo.toString(), StandardCharsets.UTF_8));
@@ -44,6 +58,12 @@ final class ClienteRest {
         HttpResponse<String> respuesta;
         try {
             respuesta = http.send(peticion.build(), HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
+        } catch (HttpConnectTimeoutException e) {
+            // Never connected: the request did not leave this computer
+            throw new ServicioException(SIN_CONEXION + endpoint);
+        } catch (HttpTimeoutException e) {
+            // Sent but not answered: the server may have processed it
+            throw new ServicioException(sinRespuestaATiempo);
         } catch (IOException e) {
             // Server down, wrong host/port in config.properties, network error...
             throw new ServicioException(SIN_CONEXION + endpoint);

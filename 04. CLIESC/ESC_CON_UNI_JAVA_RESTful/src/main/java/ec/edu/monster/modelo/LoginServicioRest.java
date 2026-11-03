@@ -11,7 +11,8 @@ public class LoginServicioRest implements LoginServicio {
     private static final String SIN_TOKEN = "El servidor no devolvió un token de sesión";
 
     private final String endpoint;
-    private final ClienteRest cliente = new ClienteRest();
+    private final ClienteRest cliente =
+            new ClienteRest(ClienteRest.ESPERA_RESPUESTA, "El servidor no respondió a tiempo");
 
     public LoginServicioRest(Configuracion configuracion) {
         this.endpoint = configuracion.getEndpoint(RutasApi.LOGIN);

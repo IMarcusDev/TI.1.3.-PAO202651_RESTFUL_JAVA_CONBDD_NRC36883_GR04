@@ -12,6 +12,7 @@ import ec.edu.monster.modelo.RutasApi;
 import ec.edu.monster.modelo.ServicioException;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.time.Duration;
 import org.json.JSONObject;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -113,6 +114,23 @@ class MovimientoServicioRestTest {
                     () -> servicio.retiro(TOKEN, "0004", "", new BigDecimal("999")));
 
             assertEquals("Saldo insuficiente", error.getMessage());
+        }
+
+        /** The request reached the server, so the movement may exist: never say "could not connect". */
+        @Test
+        void aSlowServerReportsThatTheOutcomeIsUnknown() throws IOException {
+            Configuracion configuracion = ConfiguracionDePrueba.paraPuerto(ConfiguracionDePrueba.puertoLibre());
+            try (FakeRestServer lento = FakeRestServer.iniciar(configuracion)) {
+                lento.responderTarde(RutasApi.DEPOSITO, 1_000,
+                        "{\"estado\":\"OK\",\"mensaje\":\"Depósito registrado\",\"idMovimiento\":101}");
+                MovimientoServicioRest impaciente = new MovimientoServicioRest(configuracion, Duration.ofMillis(200));
+
+                ServicioException error = assertThrows(ServicioException.class,
+                        () -> impaciente.deposito(TOKEN, "0001", "0004", new BigDecimal("100")));
+
+                assertEquals("El servidor no respondió a tiempo. La operación pudo haberse registrado: "
+                        + "verifique el saldo antes de volver a intentarlo", error.getMessage());
+            }
         }
 
         @Test

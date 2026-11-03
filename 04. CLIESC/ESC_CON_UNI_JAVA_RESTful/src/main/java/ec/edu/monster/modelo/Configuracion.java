@@ -129,11 +129,16 @@ public final class Configuracion {
 
     public int getPuerto() {
         String texto = valor("ws.port");
+        int puerto;
         try {
-            return Integer.parseInt(texto);
+            puerto = Integer.parseInt(texto);
         } catch (NumberFormatException e) {
             throw new IllegalStateException("'ws.port' no es un número en " + origen + ": " + texto, e);
         }
+        if (puerto < 1 || puerto > 65535) {
+            throw new IllegalStateException("'ws.port' debe estar entre 1 y 65535 en " + origen + ": " + texto);
+        }
+        return puerto;
     }
 
     // Returns a required key, failing with a clear message that names the file it came from

@@ -156,6 +156,21 @@ class ConfiguracionTest {
     }
 
     @Test
+    void validateRejectsAPortOutOfRange() {
+        for (String puerto : new String[] {"0", "-1", "65536"}) {
+            Properties propiedades = new Properties();
+            propiedades.setProperty("ws.host", "localhost");
+            propiedades.setProperty("ws.port", puerto);
+            propiedades.setProperty("ws.context", CONTEXTO);
+
+            IllegalStateException error = assertThrows(IllegalStateException.class,
+                    () -> new Configuracion(propiedades).validar());
+
+            assertEquals("'ws.port' debe estar entre 1 y 65535 en config.properties: " + puerto, error.getMessage());
+        }
+    }
+
+    @Test
     void validateRejectsAMalformedHost() {
         Properties propiedades = new Properties();
         propiedades.setProperty("ws.host", "192.168.1 .50");
