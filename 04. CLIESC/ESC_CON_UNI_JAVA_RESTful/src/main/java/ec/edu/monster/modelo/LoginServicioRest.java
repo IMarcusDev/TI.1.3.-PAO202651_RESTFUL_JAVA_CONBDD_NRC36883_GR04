@@ -3,7 +3,7 @@ package ec.edu.monster.modelo;
 import org.json.JSONObject;
 
 /**
- * Real implementation of {@link LoginServicio}: calls {@code POST api/login} and turns its
+ * Real implementation of {@link LoginServicio}: calls {@code POST api/Login} and turns its
  * answer (or a connection failure) into a session or an exception.
  */
 public class LoginServicioRest implements LoginServicio {
@@ -24,7 +24,7 @@ public class LoginServicioRest implements LoginServicio {
                 .put("username", usuario)
                 .put("password", clave);
 
-        JSONObject respuesta = cliente.post(endpoint, null, credenciales);
+        JSONObject respuesta = cliente.post(endpoint, credenciales);
 
         String token = respuesta.optString("token", "");
         if (token.isBlank()) {
