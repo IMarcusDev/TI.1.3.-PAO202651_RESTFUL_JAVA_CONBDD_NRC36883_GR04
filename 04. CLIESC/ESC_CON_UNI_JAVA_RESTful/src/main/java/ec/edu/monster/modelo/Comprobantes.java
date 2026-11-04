@@ -16,17 +16,17 @@ public final class Comprobantes {
 
     public static Comprobante deposito(MovimientoForm form, ResultadoMovimiento resultado) {
         return new Comprobante("Depósito", "Empleado " + form.getEmpleado(), form.getCuenta(),
-                form.getImporteFormateado(), resultado.idMovimiento(), hoy(), resultado.mensaje());
+                form.getImporteFormateado(), resultado.numeroMovimiento(), hoy(), resultado.mensaje());
     }
 
     public static Comprobante retiro(MovimientoForm form, ResultadoMovimiento resultado) {
         return new Comprobante("Retiro", form.getCuenta(), "",
-                form.getImporteFormateado(), resultado.idMovimiento(), hoy(), resultado.mensaje());
+                form.getImporteFormateado(), resultado.numeroMovimiento(), hoy(), resultado.mensaje());
     }
 
     public static Comprobante transferencia(MovimientoForm form, ResultadoMovimiento resultado) {
         return new Comprobante("Transferencia", form.getOrigen(), form.getDestino(),
-                form.getImporteFormateado(), resultado.idMovimiento(), hoy(), resultado.mensaje());
+                form.getImporteFormateado(), resultado.numeroMovimiento(), hoy(), resultado.mensaje());
     }
 
     private static String hoy() {

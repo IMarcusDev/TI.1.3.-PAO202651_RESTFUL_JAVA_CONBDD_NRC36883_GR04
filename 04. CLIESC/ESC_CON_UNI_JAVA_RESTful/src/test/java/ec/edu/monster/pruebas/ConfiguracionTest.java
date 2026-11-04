@@ -67,6 +67,14 @@ class ConfiguracionTest {
                 Configuracion.desdeClasspath().getUrlBase());
     }
 
+    /** The context root is case-sensitive: it must match the server artifactId exactly. */
+    @Test
+    void thePackagedFilePointsToTheDeployedServer() {
+        Configuracion empaquetada = Configuracion.desdeArchivo(Path.of("src/main/resources", Configuracion.ARCHIVO));
+
+        assertEquals("http://localhost:8080/WS_EUREKABANK_JAVA_RESTFul", empaquetada.getUrlBase());
+    }
+
     @Test
     void theFileNextToTheJarWinsOverThePackagedOne(@TempDir Path carpeta) throws IOException {
         escribir(carpeta.resolve(Configuracion.ARCHIVO), "10.0.0.7", "9191");

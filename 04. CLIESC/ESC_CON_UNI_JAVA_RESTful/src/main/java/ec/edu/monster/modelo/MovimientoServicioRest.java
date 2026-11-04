@@ -2,16 +2,19 @@ package ec.edu.monster.modelo;
 
 import java.math.BigDecimal;
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 /**
- * Real implementation of {@link MovimientoServicio}: calls {@code POST api/Movimiento/...}
- * with the session token in the body and turns its answer (or a connection failure) into a result or an
+ * Real implementation of {@link MovimientoServicio}: calls {@code POST api/Movimiento/...} with the
+ * session token in the body and turns its answer (or a connection failure) into a result or an
  * exception.
  */
 public class MovimientoServicioRest implements MovimientoServicio {
 
-    private static final String SIN_ID = "El servidor no devolvió el número de movimiento";
+    private static final String SIN_NUMERO = "El servidor no devolvió el número de movimiento";
 
     private static final String SIN_RESPUESTA_A_TIEMPO = "El servidor no respondió a tiempo. La operación pudo "
             + "haberse registrado: verifique el saldo antes de volver a intentarlo";
@@ -26,43 +29,86 @@ public class MovimientoServicioRest implements MovimientoServicio {
     /** Same as above, waiting at most {@code esperaRespuesta} for each answer. */
     public MovimientoServicioRest(Configuracion configuracion, Duration esperaRespuesta) {
         this.configuracion = configuracion;
-        this.cliente = new ClienteRest(esperaRespuesta, SIN_RESPUESTA_A_TIEMPO);
+        this.cliente = new ClienteRest(esperaRespuesta, SIN_RESPUESTA_A_TIEMPO, true);
     }
 
     @Override
-    public ResultadoMovimiento deposito(String token, String cuentaOrigen, String cuentaDestino, BigDecimal valor)
+    public HistorialCuenta consultarMovimientos(String token, String cuenta) throws ServicioException {
+        JSONObject respuesta = cliente.post(configuracion.getEndpoint(RutasApi.CONSULTAR_MOVIMIENTOS),
+                new JSONObject().put("token", token).put("cuenta", cuenta));
+        return new HistorialCuenta(cuenta(respuesta.optJSONObject("cuenta")),
+                movimientos(respuesta.optJSONArray("movimientos")));
+    }
+
+    @Override
+    public ResultadoMovimiento registrarDeposito(String token, String cuenta, BigDecimal importe)
             throws ServicioException {
-        return ejecutar(RutasApi.DEPOSITO, token, cuentaOrigen, cuentaDestino, valor);
+        return registrar(RutasApi.REGISTRAR_DEPOSITO, new JSONObject()
+                .put("token", token)
+                .put("cuenta", cuenta)
+                .put("importe", importe));
     }
 
     @Override
-    public ResultadoMovimiento retiro(String token, String cuentaOrigen, String cuentaDestino, BigDecimal valor)
+    public ResultadoMovimiento registrarRetiro(String token, String cuenta, BigDecimal importe, String clave)
             throws ServicioException {
-        return ejecutar(RutasApi.RETIRO, token, cuentaOrigen, cuentaDestino, valor);
+        return registrar(RutasApi.REGISTRAR_RETIRO, new JSONObject()
+                .put("token", token)
+                .put("cuenta", cuenta)
+                .put("importe", importe)
+                .put("clave", clave == null ? "" : clave));
     }
 
     @Override
-    public ResultadoMovimiento transferencia(String token, String cuentaOrigen, String cuentaDestino,
-            BigDecimal valor) throws ServicioException {
-        return ejecutar(RutasApi.TRANSFERENCIA, token, cuentaOrigen, cuentaDestino, valor);
-    }
-
-    // Shared logic of the three operations: same body, same answer, different route
-    private ResultadoMovimiento ejecutar(String ruta, String token, String cuentaOrigen, String cuentaDestino,
-            BigDecimal valor) throws ServicioException {
-        JSONObject movimiento = new JSONObject()
+    public ResultadoMovimiento registrarTransferencia(String token, String cuentaOrigen, String cuentaDestino,
+            BigDecimal importe, String clave) throws ServicioException {
+        return registrar(RutasApi.REGISTRAR_TRANSFERENCIA, new JSONObject()
                 .put("token", token)
                 .put("cuentaOrigen", cuentaOrigen)
                 .put("cuentaDestino", cuentaDestino)
-                .put("valor", valor);
+                .put("importe", importe)
+                .put("clave", clave == null ? "" : clave));
+    }
 
-        JSONObject respuesta = cliente.post(configuracion.getEndpoint(ruta), movimiento);
+    // Shared logic of the three operations: same answer, different route and body
+    private ResultadoMovimiento registrar(String ruta, JSONObject cuerpo) throws ServicioException {
+        JSONObject respuesta = cliente.post(configuracion.getEndpoint(ruta), cuerpo);
 
-        // Without the id the receipt would show movement number 0
-        if (!(respuesta.opt("idMovimiento") instanceof Number id)) {
-            throw new ServicioException(SIN_ID);
+        // Without the number the receipt would show movement 0
+        if (!(respuesta.opt("numeroMovimiento") instanceof Number numero) || numero.intValue() <= 0) {
+            throw new ServicioException(SIN_NUMERO);
         }
-        return new ResultadoMovimiento(id.intValue(),
+        return new ResultadoMovimiento(numero.intValue(), respuesta.optBigDecimal("nuevoSaldo", null),
                 ServicioException.mensaje(respuesta.optString("mensaje", null)));
+    }
+
+    private static HistorialCuenta.CuentaConsultada cuenta(JSONObject datos) {
+        if (datos == null) {
+            return new HistorialCuenta.CuentaConsultada("", "", "", null, "");
+        }
+        return new HistorialCuenta.CuentaConsultada(datos.optString("numeroCuenta", ""),
+                datos.optString("titular", ""), datos.optString("moneda", ""),
+                datos.optBigDecimal("saldo", null), datos.optString("estadoCuenta", ""));
+    }
+
+    private static List<HistorialCuenta.MovimientoConsultado> movimientos(JSONArray datos) {
+        List<HistorialCuenta.MovimientoConsultado> filas = new ArrayList<>();
+        if (datos == null) {
+            return filas;
+        }
+        for (int i = 0; i < datos.length(); i++) {
+            JSONObject movimiento = datos.optJSONObject(i);
+            if (movimiento == null) {
+                continue;
+            }
+            filas.add(new HistorialCuenta.MovimientoConsultado(
+                    Formatos.numeroMovimiento(movimiento.optInt("numeroMovimiento")),
+                    Formatos.fecha(movimiento.optString("fecha", "")),
+                    movimiento.optString("tipoMovimiento", ""),
+                    movimiento.optString("accion", ""),
+                    movimiento.optBigDecimal("importe", null),
+                    Formatos.referencia(movimiento.optString("cuentaReferencia", ""))));
+        }
+        return filas;
     }
 }
