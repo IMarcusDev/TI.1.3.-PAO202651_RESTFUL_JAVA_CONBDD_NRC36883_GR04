@@ -86,18 +86,18 @@ public final class App {
                 form -> "¿Depositar " + form.getImporteFormateado() + " en la cuenta " + form.getCuenta()
                         + " del empleado " + form.getEmpleado() + "?",
                 (token, form) -> Comprobantes.deposito(form,
-                        servicio.deposito(token, form.getEmpleado(), form.getCuenta(), form.getImporte())));
+                        servicio.registrarDeposito(token, form.getCuenta(), form.getImporte())));
 
         new MovimientoControlador(principal.getRetiroPanel(), sesion,
                 form -> "¿Retirar " + form.getImporteFormateado() + " de la cuenta " + form.getCuenta() + "?",
                 (token, form) -> Comprobantes.retiro(form,
-                        servicio.retiro(token, form.getCuenta(), form.getImporte())));
+                        servicio.registrarRetiro(token, form.getCuenta(), form.getImporte(), "")));
 
         new MovimientoControlador(principal.getTransferenciaPanel(), sesion,
                 form -> "¿Transferir " + form.getImporteFormateado() + " de la cuenta " + form.getOrigen()
                         + " a la cuenta " + form.getDestino() + "?",
                 (token, form) -> Comprobantes.transferencia(form,
-                        servicio.transferencia(token, form.getOrigen(), form.getDestino(), form.getImporte())));
+                        servicio.registrarTransferencia(token, form.getOrigen(), form.getDestino(), form.getImporte(), "")));
     }
 
     private void cerrarSesion() {

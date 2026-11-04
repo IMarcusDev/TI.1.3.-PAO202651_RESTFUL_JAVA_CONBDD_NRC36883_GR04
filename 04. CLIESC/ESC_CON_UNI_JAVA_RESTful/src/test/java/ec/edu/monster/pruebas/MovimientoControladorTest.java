@@ -24,11 +24,11 @@ class MovimientoControladorTest {
 
     @BeforeEach
     void conectar() {
-        sesion.iniciar("admin", new DatosSesion("Administrador", "Empleado", "token-1"));
+        sesion.iniciar("admin", new DatosSesion("Administrador", "Empleado", DatosSesion.EMPLEADO, "token-1"));
         new MovimientoControlador(vista, sesion,
                 form -> "¿Depositar " + form.getImporteFormateado() + " en la cuenta " + form.getCuenta() + "?",
                 (token, form) -> Comprobantes.deposito(form,
-                        servicio.deposito(token, form.getEmpleado(), form.getCuenta(), form.getImporte())));
+                        servicio.registrarDeposito(token, form.getCuenta(), form.getImporte())));
     }
 
     @Test
@@ -64,8 +64,9 @@ class MovimientoControladorTest {
         assertEquals("0002", vista.getComprobante().cuentaDestino());
         assertEquals(777, vista.getComprobante().idMovimiento());
         assertEquals("token-1", servicio.getTokenRecibido());
-        assertEquals("0001", servicio.getOrigenRecibido());
-        assertEquals("0002", servicio.getDestinoRecibido());
+        // registrarDeposito sends only the account: the server takes the employee from the token
+        assertEquals("0002", servicio.getOrigenRecibido());
+        assertNull(servicio.getDestinoRecibido());
         assertTrue(vista.isLimpiada());
     }
 
