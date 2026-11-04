@@ -288,4 +288,43 @@ class RetiroControllerTest {
     verify(dispatcher).forward(request, response);
     verifyNoInteractions(service);
   }
+
+  @Test
+  void getForClientePrefillsAccountFromSession() throws Exception {
+    when(session.getAttribute("cuenta")).thenReturn("00100001");
+
+    controller.doGet(request, response);
+
+    verify(request).setAttribute("cuenta", "00100001");
+    verify(request).setAttribute("vista", "formulario");
+    verify(dispatcher).forward(request, response);
+  }
+
+  @Test
+  void clienteRetiroForcesSessionAccountIgnoringRequest() throws Exception {
+    when(session.getAttribute("cuenta")).thenReturn("00100001");
+    params("revisar", "99999999", "50", null);
+
+    controller.doPost(request, response);
+
+    verify(request).setAttribute("cuenta", "00100001");
+    verify(request).setAttribute("importe", "50");
+    verify(request).setAttribute("importeFormateado", "$ 50.00");
+    verify(request).setAttribute("vista", "confirmacion");
+    verify(dispatcher).forward(request, response);
+  }
+
+  @Test
+  void clienteConfirmarDoesNotRequireKeyAndCallsServiceWithEmptyKey() throws Exception {
+    when(session.getAttribute("cuenta")).thenReturn("00100001");
+    params("confirmar", "99999999", "50", null);
+    when(service.retiro("abc123", "00100001", new BigDecimal("50"), ""))
+        .thenReturn(ok("Retiro registrado", 101, "450.00"));
+
+    controller.doPost(request, response);
+
+    verify(service).retiro("abc123", "00100001", new BigDecimal("50"), "");
+    verify(response).sendRedirect(CTX + "/retiro");
+    verify(session).setAttribute(eq("comprobanteRetiro"), any());
+  }
 }

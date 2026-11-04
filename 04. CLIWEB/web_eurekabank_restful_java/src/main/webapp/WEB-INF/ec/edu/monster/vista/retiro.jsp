@@ -85,15 +85,17 @@
                         <input type="hidden" name="importe" value="${fn:escapeXml(importe)}">
 
                         <%-- Required by the server for an employee withdrawal; no value attribute on purpose --%>
-                        <div class="field">
-                            <label class="field__label" for="clave">Clave de la cuenta</label>
-                            <input class="field__input${not empty errores.clave ? ' field__input--error' : ''}"
-                                   type="password" id="clave" name="clave" autocomplete="off"
-                                   <c:if test="${not empty errores.clave}">aria-invalid="true" aria-describedby="clave-error"</c:if>>
-                            <c:if test="${not empty errores.clave}">
-                                <span id="clave-error" class="field__message field__message--error"><c:out value="${errores.clave}"/></span>
-                            </c:if>
-                        </div>
+                        <c:if test="${sessionScope.tipoUsuario ne 'Cliente'}">
+                            <div class="field">
+                                <label class="field__label" for="clave">Clave de la cuenta</label>
+                                <input class="field__input${not empty errores.clave ? ' field__input--error' : ''}"
+                                       type="password" id="clave" name="clave" autocomplete="off"
+                                       <c:if test="${not empty errores.clave}">aria-invalid="true" aria-describedby="clave-error"</c:if>>
+                                <c:if test="${not empty errores.clave}">
+                                    <span id="clave-error" class="field__message field__message--error"><c:out value="${errores.clave}"/></span>
+                                </c:if>
+                            </div>
+                        </c:if>
 
                         <div class="op-actions">
                             <button class="btn btn--secondary" type="submit" name="paso" value="editar">Volver</button>
@@ -117,6 +119,7 @@
                                type="text" id="cuenta" name="cuenta" maxlength="30"
                                value="${fn:escapeXml(cuenta)}" placeholder="Ingrese el número de cuenta"
                                autocomplete="off" required
+                               <c:if test="${sessionScope.tipoUsuario eq 'Cliente'}">readonly</c:if>
                                <c:if test="${not empty errores.cuenta}">aria-invalid="true" aria-describedby="cuenta-error"</c:if>>
                         <c:if test="${not empty errores.cuenta}">
                             <span id="cuenta-error" class="field__message field__message--error"><c:out value="${errores.cuenta}"/></span>

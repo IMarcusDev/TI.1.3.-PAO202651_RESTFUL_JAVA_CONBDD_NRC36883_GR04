@@ -88,15 +88,17 @@
                         <input type="hidden" name="importe" value="${fn:escapeXml(importe)}">
 
                         <%-- Required by the server for an employee transfer; no value attribute on purpose --%>
-                        <div class="field">
-                            <label class="field__label" for="clave">Clave de la cuenta de origen</label>
-                            <input class="field__input${not empty errores.clave ? ' field__input--error' : ''}"
-                                   type="password" id="clave" name="clave" autocomplete="off"
-                                   <c:if test="${not empty errores.clave}">aria-invalid="true" aria-describedby="clave-error"</c:if>>
-                            <c:if test="${not empty errores.clave}">
-                                <span id="clave-error" class="field__message field__message--error"><c:out value="${errores.clave}"/></span>
-                            </c:if>
-                        </div>
+                        <c:if test="${sessionScope.tipoUsuario ne 'Cliente'}">
+                            <div class="field">
+                                <label class="field__label" for="clave">Clave de la cuenta de origen</label>
+                                <input class="field__input${not empty errores.clave ? ' field__input--error' : ''}"
+                                       type="password" id="clave" name="clave" autocomplete="off"
+                                       <c:if test="${not empty errores.clave}">aria-invalid="true" aria-describedby="clave-error"</c:if>>
+                                <c:if test="${not empty errores.clave}">
+                                    <span id="clave-error" class="field__message field__message--error"><c:out value="${errores.clave}"/></span>
+                                </c:if>
+                            </div>
+                        </c:if>
 
                         <div class="op-actions">
                             <button class="btn btn--secondary" type="submit" name="paso" value="editar">Volver</button>
@@ -120,6 +122,7 @@
                                type="text" id="origen" name="origen" maxlength="30"
                                value="${fn:escapeXml(origen)}" placeholder="Ingrese la cuenta de origen"
                                autocomplete="off" required
+                               <c:if test="${sessionScope.tipoUsuario eq 'Cliente'}">readonly</c:if>
                                <c:if test="${not empty errores.origen}">aria-invalid="true" aria-describedby="origen-error"</c:if>>
                         <c:if test="${not empty errores.origen}">
                             <span id="origen-error" class="field__message field__message--error"><c:out value="${errores.origen}"/></span>

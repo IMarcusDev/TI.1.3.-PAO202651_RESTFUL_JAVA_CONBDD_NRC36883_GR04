@@ -65,6 +65,10 @@ public class RetiroController extends HttpServlet {
       render(request, response, "comprobante");
       return;
     }
+    String cuentaCliente = cuentaCliente(session);
+    if (cuentaCliente != null) {
+      request.setAttribute("cuenta", cuentaCliente);
+    }
     render(request, response, "formulario");
   }
 
@@ -79,8 +83,11 @@ public class RetiroController extends HttpServlet {
     }
     response.setHeader("Cache-Control", "no-store");
 
+    String cuentaCliente = cuentaCliente(session);
+    boolean esCliente = cuentaCliente != null;
+
     String paso = request.getParameter("paso");
-    String cuenta = request.getParameter("cuenta");
+    String cuenta = esCliente ? cuentaCliente : request.getParameter("cuenta");
     String importe = request.getParameter("importe");
 
     if ("editar".equals(paso)) {
@@ -101,12 +108,15 @@ public class RetiroController extends HttpServlet {
       return;
     }
 
-    // Sent as typed (no trim): the server compares it with the stored key
-    String clave = request.getParameter("clave");
-    if (clave == null || clave.isBlank()) {
-      request.setAttribute("errores", Map.of("clave", CLAVE_VACIA));
-      showConfirmation(request, response, form);
-      return;
+    String clave = "";
+    if (!esCliente) {
+      // Sent as typed (no trim): the server compares it with the stored key
+      clave = request.getParameter("clave");
+      if (clave == null || clave.isBlank()) {
+        request.setAttribute("errores", Map.of("clave", CLAVE_VACIA));
+        showConfirmation(request, response, form);
+        return;
+      }
     }
 
     MovimientoResultado resultado =
@@ -173,5 +183,14 @@ public class RetiroController extends HttpServlet {
     }
     Object token = session.getAttribute("token");
     return token instanceof String value && !value.isBlank() ? value : null;
+  }
+
+  // Account number stored in session for a Cliente
+  private static String cuentaCliente(HttpSession session) {
+    if (session == null) {
+      return null;
+    }
+    Object cuenta = session.getAttribute("cuenta");
+    return cuenta instanceof String value && !value.isBlank() ? value : null;
   }
 }
