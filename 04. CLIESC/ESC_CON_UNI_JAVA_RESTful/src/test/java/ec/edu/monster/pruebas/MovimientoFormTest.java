@@ -114,7 +114,7 @@ class MovimientoFormTest {
     @Test
     void depositReceiptShowsEmployeeAndTargetAccount() {
         MovimientoForm form = MovimientoForm.deposito("0001", "0004", "100");
-        Comprobante comprobante = Comprobantes.deposito(form, new ResultadoMovimiento(101, "Depósito registrado"));
+        Comprobante comprobante = Comprobantes.deposito(form, new ResultadoMovimiento(101, new BigDecimal("500.00"), "Depósito registrado"));
 
         assertEquals("Depósito", comprobante.operacion());
         assertEquals("Empleado 0001", comprobante.cuentaOrigen());
@@ -128,7 +128,7 @@ class MovimientoFormTest {
     @Test
     void withdrawalReceiptHasNoTargetAccount() {
         MovimientoForm form = MovimientoForm.retiro("0004", "50");
-        Comprobante comprobante = Comprobantes.retiro(form, new ResultadoMovimiento(102, "Retiro registrado"));
+        Comprobante comprobante = Comprobantes.retiro(form, new ResultadoMovimiento(102, new BigDecimal("500.00"), "Retiro registrado"));
 
         assertEquals("Retiro", comprobante.operacion());
         assertEquals("0004", comprobante.cuentaOrigen());
@@ -139,7 +139,7 @@ class MovimientoFormTest {
     void transferReceiptShowsBothAccounts() {
         MovimientoForm form = MovimientoForm.transferencia("0001", "0002", "25.5");
         Comprobante comprobante = Comprobantes.transferencia(form,
-                new ResultadoMovimiento(103, "Transferencia registrada"));
+                new ResultadoMovimiento(103, new BigDecimal("500.00"), "Transferencia registrada"));
 
         assertEquals("Transferencia", comprobante.operacion());
         assertEquals("0001", comprobante.cuentaOrigen());

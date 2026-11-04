@@ -16,7 +16,7 @@ import org.junit.jupiter.api.io.TempDir;
 
 class ConfiguracionTest {
 
-    private static final String CONTEXTO = "WS_CON_UNI_JAVA_RESTFUL";
+    private static final String CONTEXTO = "WS_CON_UNI_JAVA_RESTFul";
 
     @Test
     void buildsTheBaseUrlAndEndpoints() {
@@ -65,6 +65,14 @@ class ConfiguracionTest {
         // src/test/resources/config.properties shadows the application one
         assertEquals("http://localhost:18080/" + CONTEXTO,
                 Configuracion.desdeClasspath().getUrlBase());
+    }
+
+    /** The context root is case-sensitive: it must match the server artifactId exactly. */
+    @Test
+    void thePackagedFilePointsToTheDeployedServer() {
+        Configuracion empaquetada = Configuracion.desdeArchivo(Path.of("src/main/resources", Configuracion.ARCHIVO));
+
+        assertEquals("http://localhost:8080/WS_CON_UNI_JAVA_RESTFul", empaquetada.getUrlBase());
     }
 
     @Test

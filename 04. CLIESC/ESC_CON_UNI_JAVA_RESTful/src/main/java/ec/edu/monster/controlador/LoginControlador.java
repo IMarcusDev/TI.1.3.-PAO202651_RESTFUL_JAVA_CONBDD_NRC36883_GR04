@@ -33,7 +33,7 @@ public class LoginControlador {
             return;
         }
         try {
-            DatosSesion datos = servicio.iniciarSesion(usuario.trim(), clave);
+            DatosSesion datos = servicio.loginEmpleado(usuario.trim(), clave);
             sesion.iniciar(usuario.trim(), datos);
             vista.abrirMenu();
         } catch (ServicioException e) {

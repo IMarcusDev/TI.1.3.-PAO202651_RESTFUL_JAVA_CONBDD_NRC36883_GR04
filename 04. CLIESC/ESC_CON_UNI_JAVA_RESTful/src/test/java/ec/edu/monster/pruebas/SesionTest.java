@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 
 class SesionTest {
 
-    private static final DatosSesion ADMIN = new DatosSesion("Administrador", "Empleado", "token-1");
+    private static final DatosSesion ADMIN = new DatosSesion("Administrador", "Empleado", DatosSesion.EMPLEADO, "token-1");
 
     @Test
     void startsAndClosesTheSession() {
@@ -40,14 +40,14 @@ class SesionTest {
         assertTrue(empleado.esEmpleado());
 
         Sesion cliente = new Sesion();
-        cliente.iniciar("cliente", new DatosSesion("Cliente", "Cliente", "token-2"));
+        cliente.iniciar("cliente", new DatosSesion("Cliente", "Cliente", DatosSesion.CLIENTE, "token-2"));
         assertFalse(cliente.esEmpleado());
     }
 
     @Test
     void blankTokenMeansTheSessionIsNotActive() {
         Sesion sesion = new Sesion();
-        sesion.iniciar("admin", new DatosSesion("Administrador", "Empleado", " "));
+        sesion.iniciar("admin", new DatosSesion("Administrador", "Empleado", DatosSesion.EMPLEADO, " "));
 
         assertFalse(sesion.estaActiva());
     }
@@ -55,7 +55,7 @@ class SesionTest {
     @Test
     void emptyNameFallsBackToTheUser() {
         Sesion sesion = new Sesion();
-        sesion.iniciar("admin", new DatosSesion("", "Empleado", "token-1"));
+        sesion.iniciar("admin", new DatosSesion("", "Empleado", DatosSesion.EMPLEADO, "token-1"));
 
         assertEquals("admin", sesion.getNombre());
     }

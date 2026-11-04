@@ -10,11 +10,12 @@ import ec.edu.monster.modelo.ServicioException;
 public class LoginServicioFalso implements LoginServicio {
 
     public static final DatosSesion SESION =
-            new DatosSesion("Administrador", "Empleado", "token-de-prueba");
+            new DatosSesion("Administrador", "Empleado", DatosSesion.EMPLEADO, "token-de-prueba");
 
     private ServicioException error;
     private String usuarioRecibido;
     private String claveRecibida;
+    private String tokenCerrado;
     private int llamadas;
 
     public void fallarCon(String mensaje) {
@@ -22,7 +23,24 @@ public class LoginServicioFalso implements LoginServicio {
     }
 
     @Override
-    public DatosSesion iniciarSesion(String usuario, String clave) throws ServicioException {
+    public DatosSesion loginEmpleado(String usuario, String clave) throws ServicioException {
+        return iniciar(usuario, clave);
+    }
+
+    @Override
+    public DatosSesion loginCliente(String cuenta, String clave) throws ServicioException {
+        return iniciar(cuenta, clave);
+    }
+
+    @Override
+    public void logout(String token) throws ServicioException {
+        tokenCerrado = token;
+        if (error != null) {
+            throw error;
+        }
+    }
+
+    private DatosSesion iniciar(String usuario, String clave) throws ServicioException {
         llamadas++;
         usuarioRecibido = usuario;
         claveRecibida = clave;
@@ -38,6 +56,10 @@ public class LoginServicioFalso implements LoginServicio {
 
     public String getClaveRecibida() {
         return claveRecibida;
+    }
+
+    public String getTokenCerrado() {
+        return tokenCerrado;
     }
 
     public int getLlamadas() {
