@@ -20,6 +20,7 @@ services:
     environment:
       MARIADB_ROOT_PASSWORD: root      # PASSWORD de DBConfig (usuario root)
       MARIADB_DATABASE: EurekaBank     # se crea vacía y la llenan los scripts de abajo
+      TZ: America/Guayaquil           # hora de Ecuador para NOW(); sin esto el contenedor usa UTC
     ports:
       - "3306:3306"                    # puerto de la URL de DBConfig
     volumes:
