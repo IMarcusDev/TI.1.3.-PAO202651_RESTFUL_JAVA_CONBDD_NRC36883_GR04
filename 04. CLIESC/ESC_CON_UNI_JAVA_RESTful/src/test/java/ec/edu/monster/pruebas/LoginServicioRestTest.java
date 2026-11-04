@@ -106,6 +106,17 @@ class LoginServicioRestTest {
             assertEquals("Credenciales incorrectas", error.getMessage());
         }
 
+        /** A login sends no token, so a 401 there is a rejection, not an expired session. */
+        @Test
+        void anUnauthorizedLoginThrowsTheServerMessage() {
+            servidor.responder(RutasApi.LOGIN_CLIENTE, 401, "{\"estado\":\"ERROR\",\"mensaje\":\"Usuario inactivo\"}");
+
+            ServicioException error = assertThrows(ServicioException.class,
+                    () -> servicio.loginCliente("00100001", "123456"));
+
+            assertEquals("Usuario inactivo", error.getMessage());
+        }
+
         @Test
         void aMissingTokenIsRejected() {
             servidor.responder(RutasApi.LOGIN_EMPLEADO, 200,

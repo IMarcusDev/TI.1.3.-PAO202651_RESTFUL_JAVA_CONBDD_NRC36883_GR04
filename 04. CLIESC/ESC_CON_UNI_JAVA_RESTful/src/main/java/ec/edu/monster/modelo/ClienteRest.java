@@ -31,14 +31,19 @@ final class ClienteRest {
     private final HttpClient http = HttpClient.newBuilder().connectTimeout(ESPERA_CONEXION).build();
     private final Duration esperaRespuesta;
     private final String sinRespuestaATiempo;
+    private final boolean conSesion;
 
     /**
      * @param sinRespuestaATiempo message for a request that was sent but not answered in time;
      *                            the server may have processed it, so it must not say "could not connect"
+     * @param conSesion           true when the requests carry a session token: then any HTTP 401
+     *                            means the session expired; a login sends no token, so its 401 keeps
+     *                            the server message
      */
-    ClienteRest(Duration esperaRespuesta, String sinRespuestaATiempo) {
+    ClienteRest(Duration esperaRespuesta, String sinRespuestaATiempo, boolean conSesion) {
         this.esperaRespuesta = esperaRespuesta;
         this.sinRespuestaATiempo = sinRespuestaATiempo;
+        this.conSesion = conSesion;
     }
 
     /** POSTs {@code cuerpo} to {@code endpoint}; the server reads the session token from the body. */
@@ -69,8 +74,8 @@ final class ClienteRest {
     }
 
     // The JSON "estado" decides; the HTTP status only matters when there is no usable JSON
-    private static JSONObject interpretar(int estadoHttp, String texto) throws ServicioException {
-        if (estadoHttp == NO_AUTORIZADO) {
+    private JSONObject interpretar(int estadoHttp, String texto) throws ServicioException {
+        if (conSesion && estadoHttp == NO_AUTORIZADO) {
             // Unknown or expired token: one fixed message, so every screen detects it the same way
             throw new ServicioException(Sesiones.TOKEN_INVALIDO);
         }

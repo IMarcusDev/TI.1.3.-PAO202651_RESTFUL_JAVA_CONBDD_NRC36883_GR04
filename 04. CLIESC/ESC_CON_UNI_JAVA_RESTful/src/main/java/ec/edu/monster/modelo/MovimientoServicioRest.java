@@ -29,7 +29,7 @@ public class MovimientoServicioRest implements MovimientoServicio {
     /** Same as above, waiting at most {@code esperaRespuesta} for each answer. */
     public MovimientoServicioRest(Configuracion configuracion, Duration esperaRespuesta) {
         this.configuracion = configuracion;
-        this.cliente = new ClienteRest(esperaRespuesta, SIN_RESPUESTA_A_TIEMPO);
+        this.cliente = new ClienteRest(esperaRespuesta, SIN_RESPUESTA_A_TIEMPO, true);
     }
 
     @Override

@@ -11,9 +11,12 @@ public class LoginServicioRest implements LoginServicio {
     private static final String SIN_TOKEN = "El servidor no devolvió un token de sesión";
 
     private final Configuracion configuracion;
-    // A login or logout that times out did nothing that matters: same text as a dead server
+    // A login or logout that times out did nothing that matters: same text as a dead server.
+    // The login sends no token, so only the logout treats a 401 as an expired session.
     private final ClienteRest cliente =
-            new ClienteRest(ClienteRest.ESPERA_RESPUESTA, ServicioException.SIN_CONEXION);
+            new ClienteRest(ClienteRest.ESPERA_RESPUESTA, ServicioException.SIN_CONEXION, false);
+    private final ClienteRest clienteConSesion =
+            new ClienteRest(ClienteRest.ESPERA_RESPUESTA, ServicioException.SIN_CONEXION, true);
 
     public LoginServicioRest(Configuracion configuracion) {
         this.configuracion = configuracion;
@@ -31,7 +34,7 @@ public class LoginServicioRest implements LoginServicio {
 
     @Override
     public void logout(String token) throws ServicioException {
-        cliente.post(configuracion.getEndpoint(RutasApi.LOGOUT), new JSONObject().put("token", token));
+        clienteConSesion.post(configuracion.getEndpoint(RutasApi.LOGOUT), new JSONObject().put("token", token));
     }
 
     private DatosSesion iniciar(String ruta, JSONObject credenciales) throws ServicioException {
