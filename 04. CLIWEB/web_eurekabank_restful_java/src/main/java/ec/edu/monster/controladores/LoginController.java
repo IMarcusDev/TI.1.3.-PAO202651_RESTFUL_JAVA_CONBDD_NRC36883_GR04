@@ -48,27 +48,34 @@ public class LoginController extends HttpServlet {
     if ("1".equals(request.getParameter("expirada"))) {
       request.setAttribute("aviso", AVISO_EXPIRADA);
     }
+    request.setAttribute("tipo", "empleado");
     request.getRequestDispatcher(VISTA_LOGIN).forward(request, response);
   }
 
   @Override
   protected void doPost(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
+    String tipo = request.getParameter("tipo");
+    boolean esCliente = "cliente".equalsIgnoreCase(tipo);
+
     // Read the form fields (name="username" / name="password" in the JSP)
     String username = request.getParameter("username");
     String password = request.getParameter("password");
 
     // Avoid a REST call when the form is incomplete
     if (isBlank(username) || isBlank(password)) {
-      showError(request, response, "Ingrese usuario y contraseña", username);
+      showError(request, response, "Ingrese usuario y contraseña", username, esCliente ? "cliente" : "empleado");
       return;
     }
 
-    LoginResultado resultado = loginService.login(username.trim(), password);
+    String identificador = username.trim();
+    LoginResultado resultado = esCliente
+        ? loginService.loginCliente(identificador, password)
+        : loginService.login(identificador, password);
 
     if (resultado.estado() != EstadosEnum.OK) {
       // Wrong credentials or connection problem: message comes from the model
-      showError(request, response, resultado.mensaje(), username);
+      showError(request, response, resultado.mensaje(), username, esCliente ? "cliente" : "empleado");
       return;
     }
 
@@ -78,9 +85,12 @@ public class LoginController extends HttpServlet {
 
     // Only plain Strings in the session, so it stays Serializable
     session.setAttribute("token", resultado.token());
-    session.setAttribute("username", username.trim());
+    session.setAttribute("username", identificador);
     session.setAttribute("nombre", resultado.nombre());
     session.setAttribute("tipoUsuario", resultado.tipoUsuario());
+    if (esCliente) {
+      session.setAttribute("cuenta", identificador);
+    }
 
     // Redirect (not forward): a browser refresh will not resend the password
     response.sendRedirect(request.getContextPath() + RUTA_MENU);
@@ -88,9 +98,10 @@ public class LoginController extends HttpServlet {
 
   // Back to the form with an error message; the username is kept, the password is not
   private void showError(HttpServletRequest request, HttpServletResponse response,
-      String mensaje, String username) throws ServletException, IOException {
+      String mensaje, String username, String tipo) throws ServletException, IOException {
     request.setAttribute("error", mensaje);
     request.setAttribute("username", username);
+    request.setAttribute("tipo", tipo);
     request.getRequestDispatcher(VISTA_LOGIN).forward(request, response);
   }
 

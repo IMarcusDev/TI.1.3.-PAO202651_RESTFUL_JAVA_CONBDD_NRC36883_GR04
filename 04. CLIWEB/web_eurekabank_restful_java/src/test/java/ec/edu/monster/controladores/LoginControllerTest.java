@@ -132,4 +132,59 @@ class LoginControllerTest {
     verify(response).sendRedirect("/web_eurekabank_restful_java/menu");
     verify(dispatcher, never()).forward(request, response);
   }
+
+  @Test
+  void validClienteCredentialsStoreAccountInNewSessionAndRedirectToMenu() throws Exception {
+    when(request.getParameter("tipo")).thenReturn("cliente");
+    when(request.getParameter("username")).thenReturn(" 00100001 ");
+    when(request.getParameter("password")).thenReturn("123456");
+    when(loginService.loginCliente("00100001", "123456")).thenReturn(new LoginResultado(
+        EstadosEnum.OK, "Ingreso de sesión exitoso", "tc1", "Juan Pérez", "Cliente"));
+
+    controller.doPost(request, response);
+
+    verify(loginService).loginCliente("00100001", "123456");
+    verify(oldSession).invalidate();
+    verify(newSession).setAttribute("token", "tc1");
+    verify(newSession).setAttribute("username", "00100001");
+    verify(newSession).setAttribute("nombre", "Juan Pérez");
+    verify(newSession).setAttribute("tipoUsuario", "Cliente");
+    verify(newSession).setAttribute("cuenta", "00100001");
+    verify(response).sendRedirect("/web_eurekabank_restful_java/menu");
+    verify(dispatcher, never()).forward(request, response);
+  }
+
+  @Test
+  void invalidTipoTreatedAsEmpleado() throws Exception {
+    when(request.getParameter("tipo")).thenReturn("otro");
+    when(request.getParameter("username")).thenReturn("admin");
+    when(request.getParameter("password")).thenReturn("1234");
+    when(loginService.login("admin", "1234")).thenReturn(new LoginResultado(
+        EstadosEnum.OK, "Ingreso de sesión exitoso", TOKEN, "Administrador", "Empleado"));
+
+    controller.doPost(request, response);
+
+    verify(loginService).login("admin", "1234");
+    verify(loginService, never()).loginCliente(anyString(), anyString());
+    verify(newSession, never()).setAttribute(eq("cuenta"), any());
+    verify(response).sendRedirect("/web_eurekabank_restful_java/menu");
+  }
+
+  @Test
+  void clienteWrongCredentialsShowServerMessageWithoutCreatingSession() throws Exception {
+    when(request.getParameter("tipo")).thenReturn("cliente");
+    when(request.getParameter("username")).thenReturn("00100001");
+    when(request.getParameter("password")).thenReturn("bad");
+    when(loginService.loginCliente("00100001", "bad"))
+        .thenReturn(LoginResultado.error("Credenciales incorrectas"));
+
+    controller.doPost(request, response);
+
+    verify(loginService).loginCliente("00100001", "bad");
+    verify(request).setAttribute("error", "Credenciales incorrectas");
+    verify(request).setAttribute("username", "00100001");
+    verify(dispatcher).forward(request, response);
+    verify(request, never()).getSession(anyBoolean());
+    verify(response, never()).sendRedirect(anyString());
+  }
 }

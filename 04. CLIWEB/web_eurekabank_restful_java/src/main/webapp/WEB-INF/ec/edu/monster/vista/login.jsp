@@ -49,9 +49,24 @@
         <form class="login-form" method="post" action="${pageContext.request.contextPath}/login">
             <%@ include file="partials/csrf.jspf" %>
             <div class="field">
-                <label class="field__label" for="username">Usuario</label>
+                <span class="field__label">Tipo de acceso</span>
+                <div style="display: flex; gap: 20px; align-items: center; padding: 4px 0;">
+                    <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+                        <input type="radio" name="tipo" value="empleado" ${empty tipo or tipo eq 'empleado' ? 'checked' : ''} onchange="actualizarTipo('empleado')">
+                        <span>Empleado</span>
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+                        <input type="radio" name="tipo" value="cliente" ${tipo eq 'cliente' ? 'checked' : ''} onchange="actualizarTipo('cliente')">
+                        <span>Cliente</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="field">
+                <label id="username-label" class="field__label" for="username"><c:choose><c:when test="${tipo eq 'cliente'}">Número de cuenta</c:when><c:otherwise>Usuario</c:otherwise></c:choose></label>
                 <input class="field__input" type="text" id="username" name="username"
-                       value="${fn:escapeXml(username)}" placeholder="Ingrese su usuario"
+                       value="${fn:escapeXml(username)}"
+                       placeholder="${tipo eq 'cliente' ? 'Ingrese su número de cuenta' : 'Ingrese su usuario'}"
                        autocomplete="username" required autofocus>
             </div>
 
@@ -63,6 +78,20 @@
 
             <button class="btn btn--primary btn--block" type="submit">Ingresar</button>
         </form>
+
+        <script>
+            function actualizarTipo(tipo) {
+                var label = document.getElementById('username-label');
+                var input = document.getElementById('username');
+                if (tipo === 'cliente') {
+                    if (label) label.textContent = 'Número de cuenta';
+                    if (input) input.placeholder = 'Ingrese su número de cuenta';
+                } else {
+                    if (label) label.textContent = 'Usuario';
+                    if (input) input.placeholder = 'Ingrese su usuario';
+                }
+            }
+        </script>
 
     </section>
 </main>

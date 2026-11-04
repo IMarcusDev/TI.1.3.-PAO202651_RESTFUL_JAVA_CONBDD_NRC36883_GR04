@@ -24,7 +24,7 @@ import java.util.Base64;
  * and the browser Back button keep working. A new session after login gets a new token.
  */
 @WebFilter(filterName = "CsrfFilter",
-    urlPatterns = {"/login", "/logout", "/menu", "/retiro", "/transferencia", "/deposito"})
+    urlPatterns = {"/login", "/logout", "/menu", "/retiro", "/transferencia", "/deposito", "/movimientos"})
 public class CsrfFilter extends HttpFilter {
   public static final String SESSION_ATTRIBUTE = "csrfToken";
   public static final String PARAMETER = "_csrf";

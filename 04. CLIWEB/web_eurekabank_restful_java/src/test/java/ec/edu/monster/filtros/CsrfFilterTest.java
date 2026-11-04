@@ -152,19 +152,19 @@ class CsrfFilterTest {
   }
 
   @ParameterizedTest
-  @ValueSource(strings = {"/retiro", "/transferencia", "/deposito", "/logout"})
+  @ValueSource(strings = {"/retiro", "/transferencia", "/deposito", "/logout", "/movimientos"})
   void postWithMissingTokenIsForbidden(String path) throws Exception {
     assertPostForbidden(path, null);
   }
 
   @ParameterizedTest
-  @ValueSource(strings = {"/retiro", "/transferencia", "/deposito", "/logout"})
+  @ValueSource(strings = {"/retiro", "/transferencia", "/deposito", "/logout", "/movimientos"})
   void postWithBlankTokenIsForbidden(String path) throws Exception {
     assertPostForbidden(path, " ");
   }
 
   @ParameterizedTest
-  @ValueSource(strings = {"/retiro", "/transferencia", "/deposito", "/logout"})
+  @ValueSource(strings = {"/retiro", "/transferencia", "/deposito", "/logout", "/movimientos"})
   void postWithWrongTokenIsForbidden(String path) throws Exception {
     assertPostForbidden(path, "otro-token");
   }

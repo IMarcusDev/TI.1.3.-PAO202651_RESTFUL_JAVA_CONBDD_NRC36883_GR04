@@ -54,7 +54,7 @@ class AuthFilterTest {
   }
 
   @ParameterizedTest
-  @ValueSource(strings = {"/menu", "/retiro", "/transferencia", "/deposito"})
+  @ValueSource(strings = {"/menu", "/retiro", "/transferencia", "/deposito", "/movimientos"})
   void withoutSessionGoesToLogin(String path) throws Exception {
     givenRequest(path, null, null);
     filter.doFilter(request, response, chain);
@@ -62,23 +62,30 @@ class AuthFilterTest {
   }
 
   @ParameterizedTest
-  @ValueSource(strings = {"/menu", "/retiro", "/transferencia", "/deposito"})
+  @ValueSource(strings = {"/menu", "/retiro", "/transferencia", "/deposito", "/movimientos"})
   void blankTokenGoesToLogin(String path) throws Exception {
     givenRequest(path, " ", "Empleado");
     filter.doFilter(request, response, chain);
     assertBlockedTo("/login");
   }
 
-  @ParameterizedTest
-  @ValueSource(strings = {"/retiro", "/transferencia", "/deposito"})
-  void clienteCannotOpenEmployeeScreens(String path) throws Exception {
-    givenRequest(path, "token", "Cliente");
+  @Test
+  void clienteCannotOpenDeposito() throws Exception {
+    givenRequest("/deposito", "token", "Cliente");
     filter.doFilter(request, response, chain);
     assertBlockedTo("/menu");
   }
 
   @ParameterizedTest
-  @ValueSource(strings = {"/retiro", "/transferencia", "/deposito"})
+  @ValueSource(strings = {"/menu", "/retiro", "/transferencia", "/movimientos"})
+  void clienteAllowedScreens(String path) throws Exception {
+    givenRequest(path, "token", "Cliente");
+    filter.doFilter(request, response, chain);
+    assertPassesThrough();
+  }
+
+  @ParameterizedTest
+  @ValueSource(strings = {"/deposito"})
   void sessionWithoutRoleCannotOpenEmployeeScreens(String path) throws Exception {
     givenRequest(path, "token", null);
     filter.doFilter(request, response, chain);
@@ -97,7 +104,7 @@ class AuthFilterTest {
   @ParameterizedTest
   @ValueSource(strings = {"empleado", "EMPLEADO", " Empleado"})
   void roleMustMatchExactly(String tipoUsuario) throws Exception {
-    givenRequest("/transferencia", "token", tipoUsuario);
+    givenRequest("/deposito", "token", tipoUsuario);
     filter.doFilter(request, response, chain);
     assertBlockedTo("/menu");
   }
@@ -111,7 +118,7 @@ class AuthFilterTest {
   }
 
   @ParameterizedTest
-  @ValueSource(strings = {"/retiro", "/transferencia", "/deposito"})
+  @ValueSource(strings = {"/retiro", "/transferencia", "/deposito", "/movimientos"})
   void empleadoOpensEmployeeScreens(String path) throws Exception {
     givenRequest(path, "token", "Empleado");
     filter.doFilter(request, response, chain);

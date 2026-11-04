@@ -13,19 +13,20 @@ import java.util.Set;
 /**
  * Access control for every protected screen, applied BEFORE the controller runs.
  * 1. No logged-in user (no session or blank token) -> /login
- * 2. Employee-only screen and the user is not "Empleado" -> /menu
+ * 2. Employee-only screen (/deposito) and the user is not "Empleado" -> /menu
  *
- * Retiro and transferencia are employee-only for now: the server does not return
- * the account of a Cliente, so the client cannot limit a Cliente to their own account.
- * Open them to Cliente once the server provides that data.
+ * A Cliente is limited to their own account registered in the session and can
+ * reach /menu, /retiro, /transferencia, and /movimientos. /deposito remains
+ * employee-only.
  */
-@WebFilter(filterName = "AuthFilter", urlPatterns = {"/menu", "/retiro", "/transferencia", "/deposito"})
+@WebFilter(filterName = "AuthFilter",
+    urlPatterns = {"/menu", "/retiro", "/transferencia", "/deposito", "/movimientos"})
 public class AuthFilter extends HttpFilter {
   // Must match the user type names returned by the server (USUARIO_TIPOS)
   public static final String ROL_EMPLEADO = "Empleado";
 
   // Screens only an employee (bank teller) can use
-  private static final Set<String> SOLO_EMPLEADO = Set.of("/retiro", "/transferencia", "/deposito");
+  private static final Set<String> SOLO_EMPLEADO = Set.of("/deposito");
 
   private static final String RUTA_LOGIN = "/login";
   private static final String RUTA_MENU = "/menu";
