@@ -1,5 +1,5 @@
 # Login
-curl -X POST "http://localhost:8080/WS_CON_UNI_JAVA_RESTFul/api/Login" \
+curl -X POST "http://localhost:8080/WS_EUREKABANK_JAVA_RESTFul/api/Login" \
   -H "Content-Type: application/json" \
   -d '{
     "username": "msosa",
@@ -7,7 +7,7 @@ curl -X POST "http://localhost:8080/WS_CON_UNI_JAVA_RESTFul/api/Login" \
   }'
 
 # Movimientos
-curl -X POST "http://localhost:8080/WS_CON_UNI_JAVA_RESTFul/api/Movimiento/deposito" \
+curl -X POST "http://localhost:8080/WS_EUREKABANK_JAVA_RESTFul/api/Movimiento/deposito" \
   -H "Content-Type: application/json" \
   -d '{
     "token": "123",
@@ -16,7 +16,7 @@ curl -X POST "http://localhost:8080/WS_CON_UNI_JAVA_RESTFul/api/Movimiento/depos
     "valor": 100
   }'
 
-curl -X POST "http://localhost:8080/WS_CON_UNI_JAVA_RESTFul/api/Movimiento/retiro" \
+curl -X POST "http://localhost:8080/WS_EUREKABANK_JAVA_RESTFul/api/Movimiento/retiro" \
   -H "Content-Type: application/json" \
   -d '{
     "token": "123",
@@ -25,7 +25,7 @@ curl -X POST "http://localhost:8080/WS_CON_UNI_JAVA_RESTFul/api/Movimiento/retir
     "valor": 50
   }'
 
-curl -X POST "http://localhost:8080/WS_CON_UNI_JAVA_RESTFul/api/Movimiento/transferencia" \
+curl -X POST "http://localhost:8080/WS_EUREKABANK_JAVA_RESTFul/api/Movimiento/transferencia" \
   -H "Content-Type: application/json" \
   -d '{
     "token": "123",

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Mike en un círculo de 64 dp para los estados sin movimientos (ícono superior del texto). -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:width="64dp"
+        android:height="64dp"
+        android:drawable="@drawable/monstruo_mike" />
+</layer-list>

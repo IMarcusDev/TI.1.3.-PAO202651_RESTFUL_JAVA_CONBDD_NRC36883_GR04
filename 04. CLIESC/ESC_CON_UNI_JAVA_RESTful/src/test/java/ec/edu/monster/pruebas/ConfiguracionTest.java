@@ -16,7 +16,7 @@ import org.junit.jupiter.api.io.TempDir;
 
 class ConfiguracionTest {
 
-    private static final String CONTEXTO = "WS_CON_UNI_JAVA_RESTFUL";
+    private static final String CONTEXTO = "WS_EUREKABANK_JAVA_RESTFul";
 
     @Test
     void buildsTheBaseUrlAndEndpoints() {

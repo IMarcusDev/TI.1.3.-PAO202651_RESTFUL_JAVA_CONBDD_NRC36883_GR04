@@ -16,7 +16,7 @@ import org.junit.Test;
 
 public class LoginRestRepositorioTest {
 
-    private static final String URL_BASE = "http://servidor:8080/WS_CON_UNI_JAVA_RESTFul/api/";
+    private static final String URL_BASE = "http://servidor:8080/WS_EUREKABANK_JAVA_RESTFul/api/";
 
     private static LoginRestRepositorio repositorio(TransporteFalso transporte) {
         return new LoginRestRepositorio(URL_BASE, transporte, () -> false);

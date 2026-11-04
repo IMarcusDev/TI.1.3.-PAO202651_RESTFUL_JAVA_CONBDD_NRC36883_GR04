@@ -9,6 +9,15 @@
             <corners android:radius="20dp" />
         </shape>
     </item>
+    <!-- Marca de agua de Monsters Inc. (ojos, manchas y puertas) al 10 %. Los márgenes negativos
+         evitan que su tamaño fijo agrande la tarjeta; lo que sobra queda recortado. -->
+    <item
+        android:width="360dp"
+        android:height="400dp"
+        android:bottom="-400dp"
+        android:drawable="@drawable/patron_monstruos"
+        android:gravity="top|end"
+        android:left="-360dp" />
     <!-- Detalle decorativo: círculo translúcido en la esquina superior derecha -->
     <item
         android:width="180dp"

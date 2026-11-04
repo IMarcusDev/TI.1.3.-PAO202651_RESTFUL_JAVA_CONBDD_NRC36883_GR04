@@ -2,7 +2,7 @@
 
 El cliente móvil implementa las mismas operaciones del ERS (RNF-001) y del ECUD que el cliente SOAP (`TI.1.1/04. CLIMOV/MOV_EUREKABANK_JAVA_SOAP/CONTRATO_SOAP.md`), expuestas como recursos REST. Este documento fija las rutas, los campos del cuerpo y los campos de respuesta que lee el cliente, para que el servidor los publique igual.
 
-- URL base: `http://<IP>:8080/WS_CON_UNI_JAVA_RESTFul/api/` (`@ApplicationPath("api")`), que se configura en `gradle.properties` (`servidor=...`).
+- URL base: `http://<IP>:8080/WS_EUREKABANK_JAVA_RESTFul/api/` (`@ApplicationPath("api")`), que se configura en `gradle.properties` (`servidor=...`).
 - Las rutas usan los nombres de operación del ERS (los mismos que en SOAP). Así no chocan con las rutas anteriores del servidor (`Movimiento/deposito`, `retiro`, `transferencia` y `POST Login`), que siguen existiendo con su cuerpo original (`cuentaOrigen`, `cuentaDestino`, `valor`).
 - Todas las operaciones son `POST` con cuerpo JSON (`Content-Type: application/json`). El token viaja como campo `token` dentro del cuerpo, igual que en los servidores actuales.
 - Todas las respuestas llevan `estado` y `mensaje`. `estado` puede ser texto (`"OK"`/`"ERROR"`) o el número del enum (`0` = OK, `1` = ERROR), como lo serializa .NET sin `JsonStringEnumConverter`.

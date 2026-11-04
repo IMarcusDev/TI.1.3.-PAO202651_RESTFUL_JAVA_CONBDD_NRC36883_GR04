@@ -18,7 +18,7 @@ import org.junit.jupiter.api.Test;
 
 //revisado y aprovado por Marcos Escobar
 class ControladoresTest {
-  private static final String BASE = "http://servidor:8080/WS_CON_UNI_JAVA_RESTFul/api";
+  private static final String BASE = "http://servidor:8080/WS_EUREKABANK_JAVA_RESTFul/api";
 
   private static ServidorFalso preparar(String respuesta) {
     ServidorFalso falso = new ServidorFalso(respuesta);

@@ -1,25 +1,32 @@
-# Local MariaDB for the EurekaBank SOAP server.
-# Values match 04. SERVIDOR/.../config/DBConfig.java:
-#   jdbc:mariadb://localhost:3306/EurekaBank  user root / password root
+# revisado y aprovado por Marcos Escobar
+# MariaDB local para el servidor EurekaBank Java RESTful (TI.1.3).
+# Los valores coinciden con 04. SERVIDOR/.../config/DBConfig.java:
+#   jdbc:mariadb://localhost:3306/EurekaBank   usuario root / clave root
 #
-# Start:   docker compose up -d        (run inside "03. BDD")
-# Stop:    docker compose down
-# Reset:   docker compose down -v      (deletes the data, the script runs again)
+# Iniciar:   docker compose up -d        (dentro de "03. BDD")
+# Detener:   docker compose down
+# Reiniciar: docker compose down -v      (borra los datos; los scripts se vuelven a ejecutar)
+#
+# En el primer arranque (volumen vacío) crea las tablas y carga seed.sql (usuarios de prueba
+# al inicio de ese archivo). El TI.1.1 usa el mismo puerto 3306: levante uno a la vez.
+name: eurekabank-ti13
+
 services:
   mariadb:
-    # 11.4 = current LTS; supported by the Payara driver mariadb-java-client 3.5.1
+    # 11.4 = LTS actual; compatible con el driver de Payara mariadb-java-client 3.5.1
     image: mariadb:11.4
-    container_name: eurekabank-mariadb
+    container_name: eurekabank-ti13-mariadb
     restart: unless-stopped
     environment:
-      MARIADB_ROOT_PASSWORD: root      # DBConfig PASSWORD (user root)
-      MARIADB_DATABASE: EurekaBank     # created empty, then the script below fills it
+      MARIADB_ROOT_PASSWORD: root      # PASSWORD de DBConfig (usuario root)
+      MARIADB_DATABASE: EurekaBank     # se crea vacía y la llenan los scripts de abajo
     ports:
-      - "3306:3306"                    # host port used by DBConfig URL
+      - "3306:3306"                    # puerto de la URL de DBConfig
     volumes:
-      # Runs only on the first start (empty data volume), in alphabetical order
+      # Solo se ejecutan en el primer arranque, en orden alfabético
       - ./EurekaBank_MySQL.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
-      # Keeps the data between restarts
+      - ./seed.sql:/docker-entrypoint-initdb.d/02-seed.sql:ro
+      # Conserva los datos entre reinicios
       - eurekabank-data:/var/lib/mysql
     healthcheck:
       test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]

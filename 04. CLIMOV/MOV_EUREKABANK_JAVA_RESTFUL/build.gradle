@@ -2,8 +2,8 @@ plugins {
     id 'com.android.application' version '9.4.0'
 }
 
-// URL base del servidor REST. Se cambia en gradle.properties o con -Pservidor=http://<IP>:8080/WS_CON_UNI_JAVA_RESTFul/api/
-def servidor = project.findProperty('servidor') ?: 'http://10.0.2.2:8080/WS_CON_UNI_JAVA_RESTFul/api/'
+// URL base del servidor REST. Se cambia en gradle.properties o con -Pservidor=http://<IP>:8080/WS_EUREKABANK_JAVA_RESTFul/api/
+def servidor = project.findProperty('servidor') ?: 'http://10.0.2.2:8080/WS_EUREKABANK_JAVA_RESTFul/api/'
 
 android {
     namespace = 'ec.edu.monster'

@@ -23,7 +23,7 @@
             android:paddingStart="24dp"
             android:paddingTop="40dp"
             android:paddingEnd="24dp"
-            android:paddingBottom="88dp">
+            android:paddingBottom="36dp">
 
             <ImageView
                 android:layout_width="72dp"
@@ -50,6 +50,16 @@
                 android:text="@string/app_lema"
                 android:textColor="@color/texto_sobre_primario"
                 android:textSize="14sp" />
+
+            <!-- Mike y Sulley se asoman detrás de la tarjeta del formulario (la tarjeta cubre sus pies). -->
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="150dp"
+                android:layout_marginTop="12dp"
+                android:adjustViewBounds="true"
+                android:importantForAccessibility="no"
+                android:scaleType="fitCenter"
+                android:src="@drawable/monstruos_bienvenida" />
         </LinearLayout>
 
         <com.google.android.material.card.MaterialCardView

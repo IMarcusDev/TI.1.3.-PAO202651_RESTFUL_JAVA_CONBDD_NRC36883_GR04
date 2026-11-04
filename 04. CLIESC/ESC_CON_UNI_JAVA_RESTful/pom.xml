@@ -4,11 +4,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>ec.edu.monster</groupId>
-    <artifactId>ESC_CON_UNI_JAVA_RESTful</artifactId>
+    <artifactId>ESC_EUREKABANK_JAVA_RESTful</artifactId>
     <version>1.0-SNAPSHOT</version>
     <!-- Desktop Swing application: an executable jar -->
     <packaging>jar</packaging>
-    <name>ESC_CON_UNI_JAVA_RESTful</name>
+    <name>ESC_EUREKABANK_JAVA_RESTful</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -34,7 +34,7 @@
     </dependencies>
 
     <build>
-        <finalName>ESC_CON_UNI_JAVA_RESTful</finalName>
+        <finalName>ESC_EUREKABANK_JAVA_RESTful</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

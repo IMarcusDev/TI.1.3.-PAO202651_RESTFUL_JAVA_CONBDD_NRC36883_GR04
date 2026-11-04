@@ -269,6 +269,8 @@
                         <TextView
                             android:id="@+id/lblSinMovimientos"
                             style="@style/TextoSecundario"
+                            android:drawableTop="@drawable/mike_vacio"
+                            android:drawablePadding="12dp"
                             android:layout_width="match_parent"
                             android:gravity="center"
                             android:padding="24dp"

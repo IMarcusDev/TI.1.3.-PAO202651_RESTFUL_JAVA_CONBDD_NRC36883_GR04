@@ -1,8 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<shape xmlns:android="http://schemas.android.com/apk/res/android"
-    android:shape="rectangle">
-    <gradient
-        android:angle="315"
-        android:endColor="@color/eureka_primario"
-        android:startColor="@color/eureka_primario_oscuro" />
-</shape>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="rectangle">
+            <gradient
+                android:angle="315"
+                android:endColor="@color/eureka_primario"
+                android:startColor="@color/eureka_primario_oscuro" />
+        </shape>
+    </item>
+    <!-- Marca de agua de Monsters Inc. (ojos, manchas y puertas) al 10 %. Los márgenes negativos
+         evitan que su tamaño fijo agrande el encabezado; lo que sobra queda recortado. -->
+    <item
+        android:width="360dp"
+        android:height="400dp"
+        android:bottom="-400dp"
+        android:drawable="@drawable/patron_monstruos"
+        android:gravity="top|center_horizontal"
+        android:left="-180dp"
+        android:right="-180dp" />
+</layer-list>

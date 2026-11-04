@@ -9,7 +9,7 @@ public final class ConfigHTTP {
   public static final String CLIENTE = "CLIENTE";
   public static final Duration TIMEOUT = Duration.ofSeconds(15);
 
-  private static String baseUrl = "http://localhost:8080/WS_CON_UNI_JAVA_RESTFul/api";
+  private static String baseUrl = "http://localhost:8080/WS_EUREKABANK_JAVA_RESTFul/api";
   private static String token = "";
   private static String perfil = "";
   private static String nombre = "";
