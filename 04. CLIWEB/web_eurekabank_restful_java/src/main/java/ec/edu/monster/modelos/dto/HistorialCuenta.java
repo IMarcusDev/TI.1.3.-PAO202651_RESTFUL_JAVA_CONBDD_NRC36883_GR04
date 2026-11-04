@@ -20,6 +20,15 @@ public record HistorialCuenta(
     return movimientos.isEmpty();
   }
 
+  // JavaBean getters: EL in the JSP does not resolve record accessors
+  public CuentaConsultada getCuenta() {
+    return cuenta;
+  }
+
+  public List<MovimientoConsultado> getMovimientos() {
+    return movimientos;
+  }
+
   public static HistorialCuenta ok(
       String mensaje, CuentaConsultada cuenta, List<MovimientoConsultado> movimientos) {
     return new HistorialCuenta(EstadosEnum.OK, mensaje, cuenta, movimientos);

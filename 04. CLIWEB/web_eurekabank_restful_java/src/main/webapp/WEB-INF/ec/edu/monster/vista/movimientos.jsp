@@ -103,7 +103,7 @@
                                                 <td><c:out value="${m.fecha}"/></td>
                                                 <td><c:out value="${m.tipo}"/></td>
                                                 <td>
-                                                    <span class="${m.esIngreso ? 'movimiento--ingreso' : 'movimiento--egreso'}">
+                                                    <span class="${m.ingreso ? 'movimiento--ingreso' : 'movimiento--egreso'}">
                                                         <c:out value="${m.accion}"/>
                                                     </span>
                                                 </td>
