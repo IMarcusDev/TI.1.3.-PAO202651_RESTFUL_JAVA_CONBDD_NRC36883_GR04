@@ -2,9 +2,14 @@ package ec.edu.monster.modelos.servicios;
 
 import ec.edu.monster.config.WsConfig;
 import ec.edu.monster.modelos.dto.EstadosEnum;
+import ec.edu.monster.modelos.dto.Formatos;
+import ec.edu.monster.modelos.dto.HistorialCuenta;
 import ec.edu.monster.modelos.dto.MovimientoResultado;
 import java.math.BigDecimal;
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 /**
@@ -57,6 +62,55 @@ public class MovimientoService {
         .put("importe", importe)
         .put("clave", clave);
     return call(RutasApi.REGISTRAR_TRANSFERENCIA, cuerpo);
+  }
+
+  public HistorialCuenta consultarMovimientos(String token, String cuenta) {
+    JSONObject cuerpo = new JSONObject()
+        .put("token", token)
+        .put("cuenta", cuenta);
+    ClienteRest.Respuesta respuesta = cliente.post(baseUrl + "/" + RutasApi.CONSULTAR_MOVIMIENTOS, cuerpo);
+    if (!respuesta.ok()) {
+      return HistorialCuenta.fallo(respuesta.estado(), respuesta.mensaje());
+    }
+    JSONObject json = respuesta.json();
+    return new HistorialCuenta(
+        EstadosEnum.OK,
+        respuesta.mensaje(),
+        cuenta(json.optJSONObject("cuenta")),
+        movimientos(json.optJSONArray("movimientos")));
+  }
+
+  private static HistorialCuenta.CuentaConsultada cuenta(JSONObject datos) {
+    if (datos == null) {
+      return new HistorialCuenta.CuentaConsultada("", "", "", null, "");
+    }
+    return new HistorialCuenta.CuentaConsultada(
+        datos.optString("numeroCuenta", ""),
+        datos.optString("titular", ""),
+        datos.optString("moneda", ""),
+        datos.optBigDecimal("saldo", null),
+        datos.optString("estadoCuenta", ""));
+  }
+
+  private static List<HistorialCuenta.MovimientoConsultado> movimientos(JSONArray datos) {
+    List<HistorialCuenta.MovimientoConsultado> filas = new ArrayList<>();
+    if (datos == null) {
+      return filas;
+    }
+    for (int i = 0; i < datos.length(); i++) {
+      JSONObject mov = datos.optJSONObject(i);
+      if (mov == null) {
+        continue;
+      }
+      filas.add(new HistorialCuenta.MovimientoConsultado(
+          Formatos.numeroMovimiento(mov.optInt("numeroMovimiento")),
+          Formatos.fecha(mov.optString("fecha", "")),
+          mov.optString("tipoMovimiento", ""),
+          mov.optString("accion", ""),
+          mov.optBigDecimal("importe", null),
+          Formatos.referencia(mov.optString("cuentaReferencia", ""))));
+    }
+    return filas;
   }
 
   /**

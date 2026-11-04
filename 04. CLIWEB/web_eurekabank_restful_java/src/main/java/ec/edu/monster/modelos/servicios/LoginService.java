@@ -15,6 +15,7 @@ public class LoginService {
   private static final String SIN_TOKEN = "El servidor no devolvió un token de sesión";
 
   private final String loginEndpoint;
+  private final String loginClienteEndpoint;
   private final String logoutEndpoint;
   // A login creates nothing on the server, so a late answer reads like a connection failure
   private final ClienteRest cliente;
@@ -25,13 +26,21 @@ public class LoginService {
 
   LoginService(String baseUrl) {
     this.loginEndpoint = baseUrl + "/" + RutasApi.LOGIN_EMPLEADO;
+    this.loginClienteEndpoint = baseUrl + "/" + RutasApi.LOGIN_CLIENTE;
     this.logoutEndpoint = baseUrl + "/" + RutasApi.LOGOUT;
     this.cliente = new ClienteRest(ESPERA_RESPUESTA, ClienteRest.sinConexion(loginEndpoint));
   }
 
   public LoginResultado login(String usuario, String clave) {
-    JSONObject cuerpo = new JSONObject().put("usuario", usuario).put("clave", clave);
-    ClienteRest.Respuesta respuesta = cliente.post(loginEndpoint, cuerpo);
+    return autenticar(loginEndpoint, new JSONObject().put("usuario", usuario).put("clave", clave));
+  }
+
+  public LoginResultado loginCliente(String cuenta, String clave) {
+    return autenticar(loginClienteEndpoint, new JSONObject().put("cuenta", cuenta).put("clave", clave));
+  }
+
+  private LoginResultado autenticar(String endpoint, JSONObject cuerpo) {
+    ClienteRest.Respuesta respuesta = cliente.post(endpoint, cuerpo);
     if (!respuesta.ok()) {
       return LoginResultado.error(respuesta.mensaje());
     }

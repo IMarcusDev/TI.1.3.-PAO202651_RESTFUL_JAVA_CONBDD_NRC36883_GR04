@@ -99,4 +99,31 @@ class LoginServiceTest {
 
     assertDoesNotThrow(() -> sinServidor.logout("t1"));
   }
+
+  @Test
+  void loginClienteOkPostsAccountAndReturnsSessionData() {
+    server.answer(200, "{\"estado\":\"OK\",\"mensaje\":\"Ingreso de sesión exitoso\",\"token\":\"tc1\","
+        + "\"nombre\":\"Juan Pérez\",\"tipoUsuario\":\"Cliente\",\"perfil\":\"CLIENTE\"}");
+
+    LoginResultado resultado = service.loginCliente("00100001", "123456");
+
+    assertEquals("POST " + FakeRestServer.CONTEXT + "/api/Login/loginCliente", server.lastPath());
+    JSONObject body = server.lastBody();
+    assertEquals("00100001", body.getString("cuenta"));
+    assertEquals("123456", body.getString("clave"));
+    assertEquals(EstadosEnum.OK, resultado.estado());
+    assertEquals("tc1", resultado.token());
+    assertEquals("Juan Pérez", resultado.nombre());
+    assertEquals("Cliente", resultado.tipoUsuario());
+  }
+
+  @Test
+  void loginClienteRejectedCredentialsReturnServerMessage() {
+    server.answer(400, "{\"estado\":\"ERROR\",\"mensaje\":\"Credenciales incorrectas\",\"token\":\"\"}");
+
+    LoginResultado resultado = service.loginCliente("00100001", "error");
+
+    assertEquals(EstadosEnum.ERROR, resultado.estado());
+    assertEquals("Credenciales incorrectas", resultado.mensaje());
+  }
 }

@@ -2,9 +2,11 @@ package ec.edu.monster.modelos.servicios;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import ec.edu.monster.fakes.FakeRestServer;
 import ec.edu.monster.modelos.dto.EstadosEnum;
+import ec.edu.monster.modelos.dto.HistorialCuenta;
 import ec.edu.monster.modelos.dto.MovimientoResultado;
 import java.math.BigDecimal;
 import java.time.Duration;
@@ -145,5 +147,75 @@ class MovimientoServiceTest {
     assertEquals(EstadosEnum.ERROR, resultado.estado());
     assertEquals("No se pudo conectar con el servidor: " + base + "/api/Movimiento/registrarDeposito",
         resultado.mensaje());
+  }
+
+  @Test
+  void consultarMovimientosPostsTokenAndAccount() {
+    server.answer(200, "{\"estado\":\"OK\",\"mensaje\":\"Consulta de movimientos exitosa\","
+        + "\"cuenta\":{\"numeroCuenta\":\"00100001\",\"titular\":\"Carlos Ruiz\",\"moneda\":\"USD\","
+        + "\"saldo\":1250.00,\"estadoCuenta\":\"ACTIVO\"},"
+        + "\"movimientos\":[{\"numeroMovimiento\":6,\"fecha\":\"2026-11-03T09:15:00\","
+        + "\"tipoMovimiento\":\"Depósito\",\"accion\":\"INGRESO\",\"importe\":200.00,\"cuentaReferencia\":\"\"}]}");
+
+    HistorialCuenta resultado = service.consultarMovimientos("t1", "00100001");
+
+    assertEquals("POST " + FakeRestServer.CONTEXT + "/api/Movimiento/consultarMovimientos", server.lastPath());
+    JSONObject body = server.lastBody();
+    assertEquals("t1", body.getString("token"));
+    assertEquals("00100001", body.getString("cuenta"));
+    assertEquals(EstadosEnum.OK, resultado.estado());
+    assertEquals("Consulta de movimientos exitosa", resultado.mensaje());
+    assertEquals("00100001", resultado.cuenta().numero());
+    assertEquals("Carlos Ruiz", resultado.cuenta().titular());
+    assertEquals("USD", resultado.cuenta().moneda());
+    assertEquals(0, new BigDecimal("1250.00").compareTo(resultado.cuenta().saldo()));
+    assertEquals("ACTIVO", resultado.cuenta().estado());
+    assertEquals("$ 1,250.00", resultado.cuenta().saldoFormateado());
+    assertFalse(resultado.sinMovimientos());
+    assertEquals(1, resultado.movimientos().size());
+
+    HistorialCuenta.MovimientoConsultado m = resultado.movimientos().get(0);
+    assertEquals("000006", m.numero());
+    assertEquals("03/11/2026 09:15", m.fecha());
+    assertEquals("Depósito", m.tipo());
+    assertEquals("INGRESO", m.accion());
+    assertTrue(m.esIngreso());
+    assertEquals(0, new BigDecimal("200.00").compareTo(m.importe()));
+    assertEquals("$ 200.00", m.importeFormateado());
+    assertEquals("-", m.referencia());
+  }
+
+  @Test
+  void consultarMovimientosEmptyListIsOk() {
+    server.answer(200, "{\"estado\":\"OK\",\"mensaje\":\"Consulta de movimientos exitosa\","
+        + "\"cuenta\":{\"numeroCuenta\":\"00100004\",\"titular\":\"Ana Gómez\",\"moneda\":\"USD\","
+        + "\"saldo\":0.00,\"estadoCuenta\":\"ACTIVO\"},"
+        + "\"movimientos\":[]}");
+
+    HistorialCuenta resultado = service.consultarMovimientos("t1", "00100004");
+
+    assertEquals(EstadosEnum.OK, resultado.estado());
+    assertTrue(resultado.sinMovimientos());
+    assertEquals(0, resultado.movimientos().size());
+  }
+
+  @Test
+  void consultarMovimientosServerErrorReturnsMessage() {
+    server.answer(400, "{\"estado\":\"ERROR\",\"mensaje\":\"La cuenta no existe\"}");
+
+    HistorialCuenta resultado = service.consultarMovimientos("t1", "99999999");
+
+    assertEquals(EstadosEnum.ERROR, resultado.estado());
+    assertEquals("La cuenta no existe", resultado.mensaje());
+  }
+
+  @Test
+  void consultarMovimientos401MeansExpiredSession() {
+    server.answer(401, "{\"estado\":\"ERROR\",\"mensaje\":\"Token inválido o sesión expirada\"}");
+
+    HistorialCuenta resultado = service.consultarMovimientos("t1", "00100001");
+
+    assertEquals(EstadosEnum.SESION_EXPIRADA, resultado.estado());
+    assertEquals("Su sesión expiró o no es válida. Inicie sesión nuevamente.", resultado.mensaje());
   }
 }

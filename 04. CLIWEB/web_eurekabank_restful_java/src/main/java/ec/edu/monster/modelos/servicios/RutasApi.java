@@ -13,20 +13,26 @@ package ec.edu.monster.modelos.servicios;
  * <pre>
  * POST api/Login/loginEmpleado   {"usuario","clave"}
  *      -> {"estado","mensaje","token","nombre","tipoUsuario","perfil"}
+ * POST api/Login/loginCliente    {"cuenta","clave"}
+ *      -> {"estado","mensaje","token","nombre","tipoUsuario","perfil"}
  * POST api/Login/logout          {"token"}
  * POST api/Movimiento/registrarDeposito        {"token","cuenta","importe"}
  * POST api/Movimiento/registrarRetiro          {"token","cuenta","importe","clave"}
  * POST api/Movimiento/registrarTransferencia   {"token","cuentaOrigen","cuentaDestino","importe","clave"}
  *      -> {"estado","mensaje","numeroMovimiento","nuevoSaldo"}
+ * POST api/Movimiento/consultarMovimientos     {"token","cuenta"}
+ *      -> {"estado","mensaje","cuenta":{...},"movimientos":[{...}]}
  * </pre>
  */
 public final class RutasApi {
   public static final String LOGIN_EMPLEADO = "api/Login/loginEmpleado";
+  public static final String LOGIN_CLIENTE = "api/Login/loginCliente";
   public static final String LOGOUT = "api/Login/logout";
 
   public static final String REGISTRAR_DEPOSITO = "api/Movimiento/registrarDeposito";
   public static final String REGISTRAR_RETIRO = "api/Movimiento/registrarRetiro";
   public static final String REGISTRAR_TRANSFERENCIA = "api/Movimiento/registrarTransferencia";
+  public static final String CONSULTAR_MOVIMIENTOS = "api/Movimiento/consultarMovimientos";
 
   private RutasApi() {
     // Constants only
