@@ -1,0 +1,134 @@
+/*
+ * Money operation screens (Depósito, Retiro, Transferencia): form, confirmation and receipt.
+ * Figma "EurekaBank - Plantillas UI", frames "Web · Transferencia (Empleado)",
+ * "Web · Confirmación" and "Web · Comprobante".
+ * Uses the tokens of eurekabank.css and the app shell of menu.css.
+ */
+
+/* Links styled as buttons */
+a.btn {
+  text-decoration: none;
+}
+
+/* ---------- Form card ---------- */
+
+.op-card {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 560px;
+  max-width: 100%;
+  padding: 24px;
+  background: var(--white);
+  border: 1px solid var(--gray-300);
+  border-radius: var(--radius-lg);
+}
+
+.op-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin: 0;
+}
+
+.op-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+/* ---------- Confirmation (dialog-like card, no JavaScript) ---------- */
+
+.op-dialog {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 460px;
+  max-width: 100%;
+  padding: 24px;
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 12px 32px rgba(10, 36, 69, 0.18);
+}
+
+.op-dialog__title {
+  margin: 0;
+  font-size: 20px;
+  line-height: 28px;
+  font-weight: 600;
+  color: var(--brand-900);
+}
+
+.op-dialog__text {
+  margin: 0;
+  color: var(--gray-900);
+  overflow-wrap: anywhere;
+}
+
+/* ---------- Receipt ---------- */
+
+.receipt__title {
+  margin: 0;
+  font-size: 20px;
+  line-height: 28px;
+  font-weight: 600;
+  color: var(--brand-900);
+}
+
+.receipt {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 0;
+}
+
+.receipt__row {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.receipt__row dt {
+  color: var(--gray-600);
+}
+
+.receipt__row dd {
+  margin: 0;
+  font-weight: 600;
+  color: var(--gray-900);
+  text-align: right;
+  overflow-wrap: anywhere;
+}
+
+.processed {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.processed__caption {
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 500;
+  color: var(--gray-600);
+}
+
+/* ---------- Responsive (down to 360px) ---------- */
+
+@media (max-width: 480px) {
+  .op-card,
+  .op-dialog {
+    padding: 16px;
+  }
+
+  /* Buttons stacked full width, primary action on top */
+  .op-actions {
+    flex-direction: column-reverse;
+  }
+
+  .op-actions .btn {
+    width: 100%;
+  }
+}

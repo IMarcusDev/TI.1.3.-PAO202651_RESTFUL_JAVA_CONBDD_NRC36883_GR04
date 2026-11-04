@@ -1,0 +1,75 @@
+/*
+ * Consultar movimientos styles.
+ * Figma "EurekaBank - Plantillas UI".
+ */
+
+.movimientos-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: 100%;
+  max-width: 900px;
+}
+
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  background: var(--white);
+  border: 1px solid var(--gray-300);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 2px 8px rgba(10, 36, 69, 0.04);
+}
+
+.movimientos-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  line-height: 20px;
+  text-align: left;
+}
+
+.movimientos-table th,
+.movimientos-table td {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--gray-300);
+}
+
+.movimientos-table th {
+  background: var(--gray-100);
+  color: var(--brand-900);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.movimientos-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.movimientos-table tbody tr:hover {
+  background: var(--brand-100);
+}
+
+.movimientos-table td.text-right,
+.movimientos-table th.text-right {
+  text-align: right;
+}
+
+.movimiento--ingreso {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+  background: var(--success-50);
+  color: var(--success-600);
+  font-weight: 600;
+  font-size: 12px;
+}
+
+.movimiento--egreso {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+  background: var(--gray-100);
+  color: var(--gray-900);
+  font-weight: 500;
+  font-size: 12px;
+}

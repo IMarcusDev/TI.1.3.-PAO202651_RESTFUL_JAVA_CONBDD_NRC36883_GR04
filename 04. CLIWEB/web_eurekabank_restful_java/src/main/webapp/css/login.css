@@ -1,0 +1,51 @@
+/*
+ * Login screen. Figma frames "Web · Login" and "Web · Login (error)".
+ * Depends on eurekabank.css (tokens and shared components).
+ */
+
+.login-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 16px;
+  background: var(--brand-900);
+}
+
+.login-card {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+  max-width: 440px;
+  padding: 32px;
+  border-radius: var(--radius-lg);
+  background: var(--white);
+  box-shadow: 0 8px 24px rgba(10, 36, 69, 0.12);
+}
+
+.login-card__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.login-card__title {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+@media (max-width: 480px) {
+  .login-card {
+    padding: 24px;
+  }
+}
