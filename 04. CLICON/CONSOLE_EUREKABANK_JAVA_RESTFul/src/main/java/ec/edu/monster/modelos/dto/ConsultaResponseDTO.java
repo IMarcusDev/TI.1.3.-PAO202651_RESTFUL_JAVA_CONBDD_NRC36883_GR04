@@ -3,6 +3,7 @@ package ec.edu.monster.modelos.dto;
 import ec.edu.monster.modelos.enums.EstadosEnum;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -43,6 +44,14 @@ public class ConsultaResponseDTO extends ResponseDTO {
 
   public List<MovimientoDTO> getMovimientos() {
     return movimientos;
+  }
+
+  //revisado y aprovado por Marcos Escobar
+  /** Movimientos del más reciente al más antiguo (mayor número de movimiento primero): es el orden de la tabla. */
+  public List<MovimientoDTO> getMovimientosRecientes() {
+    List<MovimientoDTO> recientes = new ArrayList<>(movimientos);
+    recientes.sort(Comparator.comparingInt(MovimientoDTO::getNumeroMovimiento).reversed());
+    return recientes;
   }
 
   public static ConsultaResponseDTO fromJSON(String json) {

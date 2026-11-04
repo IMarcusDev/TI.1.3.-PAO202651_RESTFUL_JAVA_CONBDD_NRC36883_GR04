@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import ec.edu.monster.modelos.dto.ConsultaResponseDTO;
+import ec.edu.monster.modelos.dto.MovimientoDTO;
 import ec.edu.monster.modelos.dto.LoginResponseDTO;
 import ec.edu.monster.modelos.dto.MovimientoResponseDTO;
 import ec.edu.monster.modelos.dto.ResponseDTO;
@@ -76,5 +77,20 @@ class DtoTest {
     ConsultaResponseDTO error = ConsultaResponseDTO.fromJSON("{\"estado\":\"ERROR\",\"mensaje\":\"La cuenta no existe\"}");
     assertEquals(EstadosEnum.ERROR, error.getEstado());
     assertEquals("La cuenta no existe", error.getMensaje());
+  }
+
+  //revisado y aprovado por Marcos Escobar
+  @Test
+  void consultaMuestraPrimeroElUltimoMovimiento() {
+    ConsultaResponseDTO dto = new ConsultaResponseDTO(EstadosEnum.OK, "ok");
+    for (int n : new int[] { 3, 6, 10, 9 }) {
+      dto.getMovimientos().add(new MovimientoDTO(n, "", "", "", BigDecimal.ONE, ""));
+    }
+    StringBuilder recientes = new StringBuilder();
+    for (MovimientoDTO m : dto.getMovimientosRecientes()) {
+      recientes.append(recientes.length() == 0 ? "" : ",").append(m.getNumeroMovimiento());
+    }
+    assertEquals("10,9,6,3", recientes.toString());
+    assertEquals(3, dto.getMovimientos().get(0).getNumeroMovimiento());
   }
 }

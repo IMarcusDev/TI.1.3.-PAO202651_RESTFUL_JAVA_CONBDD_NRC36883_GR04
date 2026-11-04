@@ -212,7 +212,7 @@ public class MovimientosFragment extends PestanaFragment {
 
         int cantidad = consulta.getMovimientos().size();
         lblCantidad.setText(getResources().getQuantityString(R.plurals.mov_cantidad, cantidad, cantidad));
-        adaptador.actualizar(consulta.getMovimientos(), cuenta.getMoneda());
+        adaptador.actualizar(consulta.getMovimientosRecientes(), cuenta.getMoneda());
         listaMovimientos.setVisibility(cantidad == 0 ? View.GONE : View.VISIBLE);
         lblVacio.setVisibility(cantidad == 0 ? View.VISIBLE : View.GONE);
     }

@@ -56,7 +56,7 @@ public class ConsultaView {
     }
 
     List<String[]> filas = new ArrayList<>();
-    for (MovimientoDTO m : res.getMovimientos()) {
+    for (MovimientoDTO m : res.getMovimientosRecientes()) {
       filas.add(new String[] {
         String.valueOf(m.getNumeroMovimiento()),
         Formato.fecha(m.getFecha()),

@@ -182,7 +182,7 @@ public class InicioFragment extends PestanaFragment {
 
         ConsultaMovimientos consulta = resultado.getDatos();
         mostrarCuenta(consulta.getCuenta());
-        mostrarUltimos(consulta.getMovimientos(), consulta.getCuenta().getMoneda());
+        mostrarUltimos(consulta.getMovimientosRecientes(), consulta.getCuenta().getMoneda());
     }
 
     private void mostrarEstadoCarga(String mensaje, boolean conError) {
@@ -203,16 +203,16 @@ public class InicioFragment extends PestanaFragment {
         lblEstadoCuenta.setText(estado == null || estado.isEmpty() ? Cuenta.ESTADO_ACTIVO : estado);
     }
 
-    /** Muestra los últimos movimientos, del más reciente al más antiguo. */
-    private void mostrarUltimos(List<Movimiento> movimientos, String moneda) {
+    /** Muestra los últimos movimientos; la lista ya viene del más reciente al más antiguo. */
+    private void mostrarUltimos(List<Movimiento> recientes, String moneda) {
         listaUltimos.removeAllViews();
         LayoutInflater inflador = getLayoutInflater();
-        int desde = Math.max(0, movimientos.size() - ULTIMOS_MOVIMIENTOS);
-        for (int i = movimientos.size() - 1; i >= desde; i--) {
+        int hasta = Math.min(recientes.size(), ULTIMOS_MOVIMIENTOS);
+        for (int i = 0; i < hasta; i++) {
             View fila = MovimientoVista.crear(inflador, listaUltimos);
-            MovimientoVista.enlazar(fila, movimientos.get(i), moneda);
+            MovimientoVista.enlazar(fila, recientes.get(i), moneda);
             listaUltimos.addView(fila);
         }
-        lblSinMovimientos.setVisibility(movimientos.isEmpty() ? View.VISIBLE : View.GONE);
+        lblSinMovimientos.setVisibility(recientes.isEmpty() ? View.VISIBLE : View.GONE);
     }
 }
