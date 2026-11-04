@@ -91,7 +91,7 @@ public final class App {
         new MovimientoControlador(principal.getRetiroPanel(), sesion,
                 form -> "¿Retirar " + form.getImporteFormateado() + " de la cuenta " + form.getCuenta() + "?",
                 (token, form) -> Comprobantes.retiro(form,
-                        servicio.retiro(token, form.getCuenta(), "", form.getImporte())));
+                        servicio.retiro(token, form.getCuenta(), form.getImporte())));
 
         new MovimientoControlador(principal.getTransferenciaPanel(), sesion,
                 form -> "¿Transferir " + form.getImporteFormateado() + " de la cuenta " + form.getOrigen()

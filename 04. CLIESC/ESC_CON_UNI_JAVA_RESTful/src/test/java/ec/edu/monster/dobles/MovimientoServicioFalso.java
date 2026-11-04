@@ -29,9 +29,9 @@ public class MovimientoServicioFalso implements MovimientoServicio {
     }
 
     @Override
-    public ResultadoMovimiento retiro(String token, String cuentaOrigen, String cuentaDestino, BigDecimal valor)
+    public ResultadoMovimiento retiro(String token, String cuentaOrigen, BigDecimal valor)
             throws ServicioException {
-        return registrar(token, cuentaOrigen, cuentaDestino, valor);
+        return registrar(token, cuentaOrigen, null, valor);
     }
 
     @Override

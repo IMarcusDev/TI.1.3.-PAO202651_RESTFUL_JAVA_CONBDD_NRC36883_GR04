@@ -1,6 +1,7 @@
 package ec.edu.monster.pruebas;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -57,7 +58,7 @@ class MovimientoServicioRestTest {
             assertEquals("Depósito registrado", resultado.mensaje());
             FakeRestServer.Peticion peticion = servidor.ultimaPeticion();
             assertEquals("POST", peticion.metodo());
-            assertEquals("/WS_CON_UNI_JAVA_RESTFUL/api/Movimiento/deposito", peticion.ruta());
+            assertEquals("/WS_CON_UNI_JAVA_RESTFul/api/Movimiento/deposito", peticion.ruta());
             assertNull(peticion.autorizacion());
             JSONObject cuerpo = new JSONObject(peticion.cuerpo());
             assertEquals(TOKEN, cuerpo.getString("token"));
@@ -71,16 +72,17 @@ class MovimientoServicioRestTest {
             servidor.responder(RutasApi.RETIRO, 200,
                     "{\"estado\":\"OK\",\"mensaje\":\"Retiro registrado\",\"idMovimiento\":102}");
 
-            ResultadoMovimiento resultado = servicio.retiro(TOKEN, "0004", "", new BigDecimal("50.5"));
+            ResultadoMovimiento resultado = servicio.retiro(TOKEN, "0004", new BigDecimal("50.5"));
 
             assertEquals(102, resultado.idMovimiento());
             assertEquals("Retiro registrado", resultado.mensaje());
             FakeRestServer.Peticion peticion = servidor.ultimaPeticion();
-            assertEquals("/WS_CON_UNI_JAVA_RESTFUL/api/Movimiento/retiro", peticion.ruta());
+            assertEquals("/WS_CON_UNI_JAVA_RESTFul/api/Movimiento/retiro", peticion.ruta());
             JSONObject cuerpo = new JSONObject(peticion.cuerpo());
             assertEquals(TOKEN, cuerpo.getString("token"));
             assertEquals("0004", cuerpo.getString("cuentaOrigen"));
-            assertEquals("", cuerpo.getString("cuentaDestino"));
+            // A withdrawal has no destination: "" would break the destination account foreign key
+            assertFalse(cuerpo.has("cuentaDestino"));
             assertEquals(0, new BigDecimal("50.5").compareTo(cuerpo.getBigDecimal("valor")));
         }
 
@@ -94,7 +96,7 @@ class MovimientoServicioRestTest {
             assertEquals(103, resultado.idMovimiento());
             assertEquals("Transferencia registrada", resultado.mensaje());
             FakeRestServer.Peticion peticion = servidor.ultimaPeticion();
-            assertEquals("/WS_CON_UNI_JAVA_RESTFUL/api/Movimiento/transferencia", peticion.ruta());
+            assertEquals("/WS_CON_UNI_JAVA_RESTFul/api/Movimiento/transferencia", peticion.ruta());
             assertNull(peticion.autorizacion());
             assertEquals(TOKEN, new JSONObject(peticion.cuerpo()).getString("token"));
         }
@@ -115,7 +117,7 @@ class MovimientoServicioRestTest {
                     "{\"estado\":\"ERROR\",\"mensaje\":\"Saldo insuficiente\"}");
 
             ServicioException error = assertThrows(ServicioException.class,
-                    () -> servicio.retiro(TOKEN, "0004", "", new BigDecimal("999")));
+                    () -> servicio.retiro(TOKEN, "0004", new BigDecimal("999")));
 
             assertEquals("Saldo insuficiente", error.getMessage());
         }

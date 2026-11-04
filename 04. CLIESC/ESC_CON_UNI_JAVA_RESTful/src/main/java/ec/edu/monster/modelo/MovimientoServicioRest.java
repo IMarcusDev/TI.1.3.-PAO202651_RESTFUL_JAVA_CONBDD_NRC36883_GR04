@@ -36,9 +36,10 @@ public class MovimientoServicioRest implements MovimientoServicio {
     }
 
     @Override
-    public ResultadoMovimiento retiro(String token, String cuentaOrigen, String cuentaDestino, BigDecimal valor)
+    public ResultadoMovimiento retiro(String token, String cuentaOrigen, BigDecimal valor)
             throws ServicioException {
-        return ejecutar(RutasApi.RETIRO, token, cuentaOrigen, cuentaDestino, valor);
+        // null leaves "cuentaDestino" out of the JSON; "" would break the destination account foreign key
+        return ejecutar(RutasApi.RETIRO, token, cuentaOrigen, null, valor);
     }
 
     @Override

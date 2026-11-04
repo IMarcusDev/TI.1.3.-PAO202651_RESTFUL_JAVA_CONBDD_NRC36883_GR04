@@ -26,7 +26,7 @@ public final class ConfiguracionDePrueba {
         Properties propiedades = new Properties();
         propiedades.setProperty("ws.host", "localhost");
         propiedades.setProperty("ws.port", String.valueOf(puerto));
-        propiedades.setProperty("ws.context", "WS_CON_UNI_JAVA_RESTFUL");
+        propiedades.setProperty("ws.context", "WS_CON_UNI_JAVA_RESTFul");
         return new Configuracion(propiedades);
     }
 }
