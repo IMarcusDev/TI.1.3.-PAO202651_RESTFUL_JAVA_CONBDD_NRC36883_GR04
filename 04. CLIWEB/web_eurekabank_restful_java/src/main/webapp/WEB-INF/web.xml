@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Jakarta EE 10 / Servlet 6.0 deployment descriptor.
+     The version attribute tells Payara which specification to apply:
+     6.0 enables annotations (@WebServlet) and EL (${...}) in JSPs. -->
+<web-app xmlns="https://jakarta.ee/xml/ns/jakartaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd"
+         version="6.0">
+
+    <!-- Name shown in the Payara admin console -->
+    <display-name>web_eurekabank_restful_java</display-name>
+
+    <!-- Read form fields as UTF-8 (default is ISO-8859-1, which breaks ñ and accents)
+         and send responses as UTF-8 -->
+    <request-character-encoding>UTF-8</request-character-encoding>
+    <response-character-encoding>UTF-8</response-character-encoding>
+
+    <!-- Session id only in a cookie, never in URLs (no ;jsessionid= leaks) -->
+    <session-config>
+        <tracking-mode>COOKIE</tracking-mode>
+    </session-config>
+
+    <!-- Page opened at http://localhost:8080/web_eurekabank_restful_java/ -->
+    <welcome-file-list>
+        <welcome-file>index.jsp</welcome-file>
+    </welcome-file-list>
+</web-app>

@@ -1,0 +1,4 @@
+<%@ page pageEncoding="UTF-8" %>
+<%-- CSRF token (synchronizer token, checked by CsrfFilter). Static include inside every POST form;
+     requires the including page to declare the "c" taglib. --%>
+<input type="hidden" name="_csrf" value="<c:out value='${sessionScope.csrfToken}'/>">

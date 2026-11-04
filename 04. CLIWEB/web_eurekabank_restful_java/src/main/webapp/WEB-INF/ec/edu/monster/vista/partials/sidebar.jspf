@@ -1,0 +1,31 @@
+<%@ page pageEncoding="UTF-8" %>
+<%--
+  Sidebar navigation. Static include:
+    <%@ include file="partials/sidebar.jspf" %>
+  Requires the "c" taglib, the page variable ctx (context path) and the page variable
+  activeNav (inicio | deposito | retiro | transferencia) to highlight the current screen.
+  "Consultar movimientos" is not available yet: rendered disabled, no link.
+  Depósito, Retiro and Transferencia are employee-only (AuthFilter): a Cliente sees them disabled.
+--%>
+<c:set var="esEmpleado" value="${sessionScope.tipoUsuario eq 'Empleado'}"/>
+<aside class="sidebar">
+    <p class="sidebar__caption">MENÚ</p>
+    <nav aria-label="Menú principal">
+        <ul class="nav">
+            <li><a class="nav__item${activeNav eq 'inicio' ? ' nav__item--active' : ''}" href="${ctx}/menu"<c:if test="${activeNav eq 'inicio'}"> aria-current="page"</c:if>>Inicio</a></li>
+            <li><span class="nav__item nav__item--disabled" aria-disabled="true">Consultar movimientos <span class="nav__soon">Próximamente</span></span></li>
+            <c:choose>
+                <c:when test="${esEmpleado}">
+                    <li><a class="nav__item${activeNav eq 'deposito' ? ' nav__item--active' : ''}" href="${ctx}/deposito"<c:if test="${activeNav eq 'deposito'}"> aria-current="page"</c:if>>Depósito</a></li>
+                    <li><a class="nav__item${activeNav eq 'retiro' ? ' nav__item--active' : ''}" href="${ctx}/retiro"<c:if test="${activeNav eq 'retiro'}"> aria-current="page"</c:if>>Retiro</a></li>
+                    <li><a class="nav__item${activeNav eq 'transferencia' ? ' nav__item--active' : ''}" href="${ctx}/transferencia"<c:if test="${activeNav eq 'transferencia'}"> aria-current="page"</c:if>>Transferencia</a></li>
+                </c:when>
+                <c:otherwise>
+                    <li><span class="nav__item nav__item--disabled" aria-disabled="true">Depósito <span class="nav__soon">Próximamente</span></span></li>
+                    <li><span class="nav__item nav__item--disabled" aria-disabled="true">Retiro <span class="nav__soon">Próximamente</span></span></li>
+                    <li><span class="nav__item nav__item--disabled" aria-disabled="true">Transferencia <span class="nav__soon">Próximamente</span></span></li>
+                </c:otherwise>
+            </c:choose>
+        </ul>
+    </nav>
+</aside>

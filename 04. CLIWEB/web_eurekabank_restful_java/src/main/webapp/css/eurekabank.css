@@ -1,0 +1,238 @@
+/*
+ * EurekaBank shared styles.
+ * Tokens and components taken from the Figma file "EurekaBank - Plantillas UI"
+ * (page "Componentes"). Reuse these classes in every view.
+ */
+
+:root {
+  /* Brand */
+  --brand-900: #0b2545;
+  --brand-700: #13315c;
+  --brand-500: #1d4e89;
+  --brand-100: #e3ecf7;
+
+  /* Neutrals */
+  --gray-900: #1f2933;
+  --gray-600: #52606d;
+  --gray-300: #cbd2d9;
+  --gray-100: #f5f7fa;
+  --white: #ffffff;
+
+  /* Feedback */
+  --danger-600: #c62828;
+  --danger-50: #fdecea;
+  --success-600: #2e7d32;
+  --success-50: #e8f5e9;
+
+  /* Service badge */
+  --service-soap: #0f766e;
+  --service-rest: #b45309;
+  --service-java: #c2410c;
+  --service-dotnet: #5b21b6;
+
+  /* Shape */
+  --radius-sm: 6px;
+  --radius-lg: 12px;
+
+  /* Inter is the design font; system fonts are the fallback (no CDN allowed) */
+  --font: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font);
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--gray-900);
+  background: var(--gray-100);
+}
+
+/* ---------- Typography (Figma text styles) ---------- */
+
+.text-heading-xl {
+  margin: 0;
+  font-size: 28px;
+  line-height: 36px;
+  font-weight: 700;
+  color: var(--brand-900);
+}
+
+.text-body {
+  margin: 0;
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--gray-600);
+}
+
+/* ---------- Logo ---------- */
+
+.logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 600;
+  color: var(--brand-900);
+}
+
+.logo__mark {
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  background: var(--brand-500);
+  color: var(--white);
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 600;
+}
+
+/* ---------- Service badge ("Etiqueta de servicio") ----------
+ * Shows which service the client consumes.
+ * Protocol: badge__protocol--soap | badge__protocol--rest
+ * Platform: badge__platform--java | badge__platform--dotnet
+ */
+
+.badge {
+  display: inline-flex;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 500;
+  color: var(--white);
+  white-space: nowrap;
+}
+
+.badge > span {
+  padding: 4px 8px;
+}
+
+.badge__label { background: var(--brand-900); }
+.badge__protocol--soap { background: var(--service-soap); }
+.badge__protocol--rest { background: var(--service-rest); }
+.badge__platform--java { background: var(--service-java); }
+.badge__platform--dotnet { background: var(--service-dotnet); }
+
+/* ---------- Form field ("Campo de texto") ---------- */
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.field__label {
+  font-weight: 600;
+  color: var(--gray-900);
+}
+
+.field__input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--gray-300);
+  border-radius: var(--radius-sm);
+  background: var(--white);
+  font: inherit;
+  color: var(--gray-900);
+}
+
+.field__input::placeholder {
+  color: var(--gray-600);
+}
+
+.field__input:focus {
+  outline: 2px solid var(--brand-500);
+  outline-offset: 1px;
+  border-color: var(--brand-500);
+}
+
+.field__input--error {
+  border-color: var(--danger-600);
+}
+
+.field__message {
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 500;
+  color: var(--gray-600);
+}
+
+.field__message--error {
+  color: var(--danger-600);
+}
+
+/* ---------- Button ("Botón") ---------- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 20px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--brand-700);
+  outline-offset: 2px;
+}
+
+.btn--primary {
+  background: var(--brand-500);
+  color: var(--white);
+}
+
+.btn--primary:hover {
+  background: var(--brand-700);
+}
+
+.btn--secondary {
+  background: var(--white);
+  border-color: var(--brand-500);
+  color: var(--brand-500);
+}
+
+.btn--danger {
+  background: var(--danger-600);
+  color: var(--white);
+}
+
+.btn--block {
+  width: 100%;
+}
+
+/* ---------- Alert ("Alerta") ---------- */
+
+.alert {
+  margin: 0;
+  padding: 10px 14px;
+  border-left: 4px solid;
+  border-radius: var(--radius-sm);
+}
+
+.alert--error {
+  background: var(--danger-50);
+  border-color: var(--danger-600);
+  color: var(--danger-600);
+}
+
+.alert--success {
+  background: var(--success-50);
+  border-color: var(--success-600);
+  color: var(--success-600);
+}
+
+.alert--info {
+  background: var(--brand-100);
+  border-color: var(--brand-700);
+  color: var(--brand-700);
+}

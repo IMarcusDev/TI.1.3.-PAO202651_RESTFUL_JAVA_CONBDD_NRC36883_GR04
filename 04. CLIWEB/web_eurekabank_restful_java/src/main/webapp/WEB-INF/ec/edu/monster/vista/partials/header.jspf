@@ -1,0 +1,29 @@
+<%@ page pageEncoding="UTF-8" %>
+<%--
+  App header (logo, service badge, user, logout). Static include:
+    <%@ include file="partials/header.jspf" %>
+  Requires the including page to declare the "c" taglib and set the page variable ctx
+  (context path). Session attributes nombre / tipoUsuario come from LoginController.
+--%>
+<header class="app-header">
+    <div class="app-header__left">
+        <span class="logo"><span class="logo__mark">EB</span>EurekaBank</span>
+        <%-- Service badge: this client consumes the RESTful service written in Java --%>
+        <span class="badge" title="Servicio consumido: REST / Java">
+            <span class="badge__label">Servicio</span>
+            <span class="badge__protocol--rest">REST</span>
+            <span class="badge__platform--java">Java</span>
+        </span>
+    </div>
+
+    <div class="app-header__right">
+        <div class="user">
+            <span class="user__name"><c:out value="${sessionScope.nombre}"/></span>
+            <span class="user__role"><c:out value="${sessionScope.tipoUsuario}"/></span>
+        </div>
+        <form method="post" action="${ctx}/logout">
+            <%@ include file="csrf.jspf" %>
+            <button class="btn btn--secondary" type="submit">Cerrar sesión</button>
+        </form>
+    </div>
+</header>
