@@ -8,12 +8,15 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.WindowEvent;
 import javax.swing.BorderFactory;
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
+import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
 
@@ -26,6 +29,9 @@ public class LoginFrame extends JFrame implements LoginVista {
     private final Runnable alAbrirMenu;
     private final JTextField campoUsuario = Estilos.entrada(new JTextField());
     private final JPasswordField campoClave = Estilos.entrada(new JPasswordField());
+    private final JLabel etiquetaUsuario = Estilos.etiqueta("Usuario");
+    private final JRadioButton opcionEmpleado = opcionRol("Empleado", true);
+    private final JRadioButton opcionCliente = opcionRol("Cliente", false);
     private final JButton botonIngresar = Estilos.botonPrimario("Ingresar");
     private final IndicadorEstado indicadorEstado = new IndicadorEstado("");
 
@@ -33,6 +39,7 @@ public class LoginFrame extends JFrame implements LoginVista {
     // Snapshots taken on the EDT so the controller can read them from a worker thread.
     private volatile String usuarioActual;
     private volatile String claveActual;
+    private volatile boolean clienteActual;
 
     public LoginFrame(Runnable alAbrirMenu) {
         super(Estilos.TITULO_VENTANA);
@@ -61,8 +68,10 @@ public class LoginFrame extends JFrame implements LoginVista {
         formulario.add(Estilos.titulo("EurekaBank"), c);
         c.insets = new Insets(0, 0, 22, 0);
         formulario.add(Estilos.texto("Banca en línea · Servicio RESTful / Java"), c);
+        c.insets = new Insets(0, 0, 14, 0);
+        formulario.add(construirSelectorRol(), c);
         c.insets = new Insets(0, 0, 8, 0);
-        formulario.add(Estilos.etiqueta("Usuario"), c);
+        formulario.add(etiquetaUsuario, c);
         c.insets = new Insets(0, 0, 22, 0);
         formulario.add(campoUsuario, c);
         c.insets = new Insets(0, 0, 8, 0);
@@ -90,9 +99,38 @@ public class LoginFrame extends JFrame implements LoginVista {
         return contenedor;
     }
 
+    // A Cliente signs in with the account number, an Empleado with the user name
+    private JPanel construirSelectorRol() {
+        ButtonGroup grupo = new ButtonGroup();
+        grupo.add(opcionEmpleado);
+        grupo.add(opcionCliente);
+        opcionEmpleado.addActionListener(e -> actualizarEtiquetaUsuario());
+        opcionCliente.addActionListener(e -> actualizarEtiquetaUsuario());
+
+        JPanel fila = new JPanel(new FlowLayout(FlowLayout.LEFT, 18, 0));
+        fila.setOpaque(false);
+        fila.add(opcionEmpleado);
+        fila.add(opcionCliente);
+        return fila;
+    }
+
+    private JRadioButton opcionRol(String texto, boolean seleccionado) {
+        JRadioButton opcion = new JRadioButton(texto, seleccionado);
+        opcion.setOpaque(false);
+        opcion.setFont(Estilos.FUENTE);
+        opcion.setForeground(Estilos.TEXTO);
+        opcion.setFocusPainted(false);
+        return opcion;
+    }
+
+    private void actualizarEtiquetaUsuario() {
+        etiquetaUsuario.setText(opcionCliente.isSelected() ? "Número de cuenta" : "Usuario");
+    }
+
     private void ingresar() {
         usuarioActual = campoUsuario.getText();
         claveActual = new String(campoClave.getPassword());
+        clienteActual = opcionCliente.isSelected();
         Estilos.enSegundoPlano(accionIngresar, this::mostrarError, botonIngresar);
     }
 
@@ -104,6 +142,11 @@ public class LoginFrame extends JFrame implements LoginVista {
     @Override
     public String getClave() {
         return claveActual;
+    }
+
+    @Override
+    public boolean esCliente() {
+        return clienteActual;
     }
 
     @Override

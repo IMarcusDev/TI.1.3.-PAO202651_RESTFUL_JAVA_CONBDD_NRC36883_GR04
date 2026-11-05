@@ -53,7 +53,9 @@ public class ComprobanteDialog extends JDialog {
 
         int fila = 0;
         fila = agregar(tarjeta, c, fila, "Operación", comprobante.operacion());
-        fila = agregar(tarjeta, c, fila, "Cuenta de origen", comprobante.cuentaOrigen());
+        if (comprobante.cuentaOrigen() != null && !comprobante.cuentaOrigen().isBlank()) {
+            fila = agregar(tarjeta, c, fila, "Cuenta de origen", comprobante.cuentaOrigen());
+        }
         if (comprobante.cuentaDestino() != null && !comprobante.cuentaDestino().isBlank()) {
             fila = agregar(tarjeta, c, fila, "Cuenta de destino", comprobante.cuentaDestino());
         }

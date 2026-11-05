@@ -14,6 +14,7 @@ import java.util.List;
 public class MovimientoServicioFalso implements MovimientoServicio {
 
     private ServicioException error;
+    private HistorialCuenta historial;
     private int llamadas;
     private String tokenRecibido;
     private String origenRecibido;
@@ -25,6 +26,11 @@ public class MovimientoServicioFalso implements MovimientoServicio {
         this.error = new ServicioException(mensaje);
     }
 
+    /** History returned by the next queries instead of the default empty one. */
+    public void responderCon(HistorialCuenta historial) {
+        this.historial = historial;
+    }
+
     @Override
     public HistorialCuenta consultarMovimientos(String token, String cuenta) throws ServicioException {
         llamadas++;
@@ -32,6 +38,9 @@ public class MovimientoServicioFalso implements MovimientoServicio {
         origenRecibido = cuenta;
         if (error != null) {
             throw error;
+        }
+        if (historial != null) {
+            return historial;
         }
         return new HistorialCuenta(new HistorialCuenta.CuentaConsultada(cuenta, "Titular", "USD",
                 new BigDecimal("500.00"), "ACTIVO"), List.of());

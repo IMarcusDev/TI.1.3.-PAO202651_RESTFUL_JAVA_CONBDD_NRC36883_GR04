@@ -18,6 +18,7 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
@@ -33,6 +34,7 @@ public abstract class OperacionPanel extends JPanel implements OperacionVista {
 
     private final Map<String, JTextField> campos = new LinkedHashMap<>();
     private final Map<String, JLabel> etiquetasError = new LinkedHashMap<>();
+    private final Map<String, String> valoresFijos = new LinkedHashMap<>();
     private final JLabel mensajeGeneral = Estilos.mensajeError();
     private final JButton botonRevisar = Estilos.botonPrimario("Revisar");
     private final JButton botonLimpiar = Estilos.botonSecundario("Limpiar");
@@ -42,9 +44,32 @@ public abstract class OperacionPanel extends JPanel implements OperacionVista {
     private Runnable alVolver = () -> { };
 
     /**
-     * @param definicion one {@code {nombre, etiqueta}} pair per field, in display order
+     * One input of an operation screen.
+     *
+     * @param nombre     form field name ({@code cuenta}, {@code importe}...)
+     * @param etiqueta   label shown above the input
+     * @param valorFijo  value of a read-only input (e.g. the account of a Cliente), or null
+     * @param clave      true for a password input (the account key of an Empleado)
      */
-    protected OperacionPanel(String titulo, String descripcion, String[][] definicion) {
+    protected record Campo(String nombre, String etiqueta, String valorFijo, boolean clave) {
+
+        static Campo editable(String nombre, String etiqueta) {
+            return new Campo(nombre, etiqueta, null, false);
+        }
+
+        static Campo fijo(String nombre, String etiqueta, String valor) {
+            return new Campo(nombre, etiqueta, valor, false);
+        }
+
+        static Campo clave(String nombre, String etiqueta) {
+            return new Campo(nombre, etiqueta, null, true);
+        }
+    }
+
+    /**
+     * @param definicion the fields of the screen, in display order
+     */
+    protected OperacionPanel(String titulo, String descripcion, Campo... definicion) {
         super(new BorderLayout());
         setBackground(Estilos.FONDO);
         setBorder(BorderFactory.createEmptyBorder(24, 28, 20, 28));
@@ -125,7 +150,7 @@ public abstract class OperacionPanel extends JPanel implements OperacionVista {
     @Override
     public final void limpiar() {
         Estilos.enEdt(() -> {
-            campos.values().forEach(campo -> campo.setText(""));
+            campos.forEach((nombre, campo) -> campo.setText(valoresFijos.getOrDefault(nombre, "")));
             etiquetasError.values().forEach(etiqueta -> etiqueta.setText(" "));
             mensajeGeneral.setText(" ");
             if (!campos.isEmpty()) {
@@ -157,7 +182,7 @@ public abstract class OperacionPanel extends JPanel implements OperacionVista {
         return panel;
     }
 
-    private JPanel formulario(String[][] definicion) {
+    private JPanel formulario(Campo[] definicion) {
         JPanel tarjeta = Estilos.panelTarjeta();
         tarjeta.setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
@@ -167,12 +192,20 @@ public abstract class OperacionPanel extends JPanel implements OperacionVista {
         c.fill = GridBagConstraints.HORIZONTAL;
 
         int fila = 0;
-        for (String[] campo : definicion) {
+        for (Campo campo : definicion) {
             c.gridy = fila++;
             c.insets = new Insets(0, 0, 4, 0);
-            tarjeta.add(Estilos.etiqueta(campo[1]), c);
+            tarjeta.add(Estilos.etiqueta(campo.etiqueta()), c);
 
-            JTextField entrada = Estilos.entrada(new JTextField());
+            JTextField entrada = campo.clave()
+                    ? Estilos.entrada(new JPasswordField())
+                    : Estilos.entrada(new JTextField());
+            if (campo.valorFijo() != null) {
+                // Own account of a Cliente: shown, never edited
+                entrada.setText(campo.valorFijo());
+                entrada.setEditable(false);
+                valoresFijos.put(campo.nombre(), campo.valorFijo());
+            }
             c.gridy = fila++;
             c.insets = new Insets(0, 0, 2, 0);
             tarjeta.add(entrada, c);
@@ -182,8 +215,8 @@ public abstract class OperacionPanel extends JPanel implements OperacionVista {
             c.insets = new Insets(0, 0, 12, 0);
             tarjeta.add(error, c);
 
-            campos.put(campo[0], entrada);
-            etiquetasError.put(campo[0], error);
+            campos.put(campo.nombre(), entrada);
+            etiquetasError.put(campo.nombre(), error);
         }
 
         JPanel contenedor = new JPanel(new BorderLayout());

@@ -144,14 +144,15 @@ class MovimientoServicioRestTest {
             assertEquals("$ 1,250.00", historial.cuenta().saldoFormateado());
             assertEquals("ACTIVO", historial.cuenta().estado());
             assertEquals(2, historial.movimientos().size());
-            HistorialCuenta.MovimientoConsultado deposito = historial.movimientos().get(0);
+            // Newest first: the server sends 6 then 7.
+            HistorialCuenta.MovimientoConsultado deposito = historial.movimientos().get(1);
             assertEquals("000006", deposito.numero());
             assertEquals("03/11/2026 09:15", deposito.fecha());
             assertEquals("Depósito", deposito.tipo());
             assertTrue(deposito.esIngreso());
             assertEquals("$ 100.00", deposito.importeFormateado());
             assertEquals("-", deposito.referencia());
-            assertEquals("00100002", historial.movimientos().get(1).referencia());
+            assertEquals("00100002", historial.movimientos().get(0).referencia());
             FakeRestServer.Peticion peticion = servidor.ultimaPeticion();
             assertEquals("/WS_EUREKABANK_JAVA_RESTFul/api/Movimiento/consultarMovimientos", peticion.ruta());
             JSONObject cuerpo = new JSONObject(peticion.cuerpo());

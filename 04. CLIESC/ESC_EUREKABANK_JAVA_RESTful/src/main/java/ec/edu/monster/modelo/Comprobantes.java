@@ -15,7 +15,7 @@ public final class Comprobantes {
     }
 
     public static Comprobante deposito(MovimientoForm form, ResultadoMovimiento resultado) {
-        return new Comprobante("Depósito", "Empleado " + form.getEmpleado(), form.getCuenta(),
+        return new Comprobante("Depósito", "", form.getCuenta(),
                 form.getImporteFormateado(), resultado.numeroMovimiento(), hoy(), resultado.mensaje());
     }
 

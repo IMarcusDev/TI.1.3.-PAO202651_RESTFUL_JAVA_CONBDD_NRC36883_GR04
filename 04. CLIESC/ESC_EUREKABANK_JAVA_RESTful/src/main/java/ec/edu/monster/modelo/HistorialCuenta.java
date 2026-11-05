@@ -1,6 +1,9 @@
 package ec.edu.monster.modelo;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -10,7 +13,27 @@ import java.util.List;
 public record HistorialCuenta(CuentaConsultada cuenta, List<MovimientoConsultado> movimientos) {
 
     public HistorialCuenta {
-        movimientos = List.copyOf(movimientos);
+        movimientos = recientesPrimero(movimientos);
+    }
+
+    /**
+     * Newest first, which is the order every screen shows. The movement number is the server's
+     * global ID, which grows with every record, so the largest one is the newest. It does not depend
+     * on the response order; numbers that cannot be read go last, in reverse arrival order.
+     */
+    private static List<MovimientoConsultado> recientesPrimero(List<MovimientoConsultado> movimientos) {
+        List<MovimientoConsultado> copia = new ArrayList<>(movimientos);
+        Collections.reverse(copia);
+        copia.sort(Comparator.comparingLong(HistorialCuenta::numeroDe).reversed());
+        return List.copyOf(copia);
+    }
+
+    private static long numeroDe(MovimientoConsultado movimiento) {
+        try {
+            return Long.parseLong(movimiento.numero().trim());
+        } catch (RuntimeException e) {
+            return Long.MIN_VALUE;
+        }
     }
 
     public boolean sinMovimientos() {
