@@ -33,22 +33,24 @@ public class PrincipalFrame extends JFrame {
     private final CardLayout pantallas = new CardLayout();
     private final JPanel contenido = new JPanel(pantallas);
     private final MovimientosPanel movimientosPanel;
-    private final DepositoPanel depositoPanel = new DepositoPanel();
-    private final RetiroPanel retiroPanel = new RetiroPanel();
-    private final TransferenciaPanel transferenciaPanel = new TransferenciaPanel();
+    private final DepositoPanel depositoPanel;
+    private final RetiroPanel retiroPanel;
+    private final TransferenciaPanel transferenciaPanel;
     private final IndicadorEstado indicadorEstado = new IndicadorEstado("Sesión activa · ");
     private final MenuPanel menuPanel;
 
     /**
-     * @param cuenta account of the logged-in Cliente (their user name); ignored for an Empleado,
-     *               who types the account to consult
+     * @param cuenta account a Cliente logged in with (their own), null for an Empleado
      */
     public PrincipalFrame(String nombre, String tipoUsuario, String cuenta, Runnable alCerrarSesion) {
         super(Estilos.TITULO_VENTANA);
         boolean empleado = Sesion.ROL_EMPLEADO.equals(tipoUsuario);
+        boolean cliente = Sesion.ROL_CLIENTE.equals(tipoUsuario);
 
-        // Any role other than Empleado is a Cliente: their history is fixed to their own account
-        movimientosPanel = new MovimientosPanel(!empleado, cuenta, () -> seleccionar(INICIO));
+        movimientosPanel = new MovimientosPanel(cliente, cuenta, () -> seleccionar(INICIO));
+        depositoPanel = new DepositoPanel();
+        retiroPanel = new RetiroPanel(cliente, cuenta);
+        transferenciaPanel = new TransferenciaPanel(cliente, cuenta);
 
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setSize(940, 640);
@@ -112,9 +114,9 @@ public class PrincipalFrame extends JFrame {
         archivo.add(Estilos.opcion("Consultar movimientos", () -> seleccionar(MOVIMIENTOS)));
         if (empleado) {
             archivo.add(Estilos.opcion("Depósito", () -> seleccionar(DEPOSITO)));
-            archivo.add(Estilos.opcion("Retiro", () -> seleccionar(RETIRO)));
-            archivo.add(Estilos.opcion("Transferencia", () -> seleccionar(TRANSFERENCIA)));
         }
+        archivo.add(Estilos.opcion("Retiro", () -> seleccionar(RETIRO)));
+        archivo.add(Estilos.opcion("Transferencia", () -> seleccionar(TRANSFERENCIA)));
         archivo.addSeparator();
         archivo.add(Estilos.opcion("Cerrar sesión", () -> {
             try {
@@ -200,13 +202,11 @@ public class PrincipalFrame extends JFrame {
         panel.add(navegacion("Consultar movimientos", () -> seleccionar(MOVIMIENTOS)));
         if (empleado) {
             panel.add(navegacion("Depósito", () -> seleccionar(DEPOSITO)));
-            panel.add(navegacion("Retiro", () -> seleccionar(RETIRO)));
-            panel.add(navegacion("Transferencia", () -> seleccionar(TRANSFERENCIA)));
         } else {
             panel.add(proximamente("Depósito"));
-            panel.add(proximamente("Retiro"));
-            panel.add(proximamente("Transferencia"));
         }
+        panel.add(navegacion("Retiro", () -> seleccionar(RETIRO)));
+        panel.add(navegacion("Transferencia", () -> seleccionar(TRANSFERENCIA)));
         panel.add(Box.createVerticalGlue());
         return panel;
     }

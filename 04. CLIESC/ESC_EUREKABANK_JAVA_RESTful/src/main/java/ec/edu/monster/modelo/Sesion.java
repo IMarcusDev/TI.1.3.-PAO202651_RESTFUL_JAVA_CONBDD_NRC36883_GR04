@@ -8,6 +8,7 @@ public class Sesion {
 
     /** Must match the user type name returned by the server. */
     public static final String ROL_EMPLEADO = "Empleado";
+    public static final String ROL_CLIENTE = "Cliente";
 
     private String usuario;
     private String nombre;
@@ -32,9 +33,19 @@ public class Sesion {
         return token != null && !token.isBlank();
     }
 
-    /** True for a bank teller: the only role allowed to register movements for now. */
+    /** True for a bank teller: works on any account and is the only one who deposits. */
     public boolean esEmpleado() {
         return ROL_EMPLEADO.equals(tipoUsuario);
+    }
+
+    /** True for an account holder: works only on the account used to log in. */
+    public boolean esCliente() {
+        return ROL_CLIENTE.equals(tipoUsuario);
+    }
+
+    /** Account a Cliente logged in with (their user name), or null for any other role. */
+    public String getCuenta() {
+        return esCliente() ? usuario : null;
     }
 
     public String getUsuario() {

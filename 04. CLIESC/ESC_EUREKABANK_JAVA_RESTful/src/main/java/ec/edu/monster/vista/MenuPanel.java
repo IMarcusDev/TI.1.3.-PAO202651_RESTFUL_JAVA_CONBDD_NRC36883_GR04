@@ -9,10 +9,9 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
 /**
- * Home screen: greeting and one card per operation. The movement history is
- * available to every role; the three movements are only available to an
- * "Empleado", exactly like the AuthFilter of the web client, and the other roles
- * see them disabled with "Próximamente".
+ * Home screen: greeting and one card per operation. Deposit is employee-only;
+ * the movement history, the withdrawal and the transfer are available to both
+ * roles, with the texts the web client uses for a Cliente.
  */
 public class MenuPanel extends JPanel {
 
@@ -33,8 +32,12 @@ public class MenuPanel extends JPanel {
         tarjetas.add(tarjeta("Consultar movimientos", "Consulte el saldo y los movimientos de una cuenta",
                 true, alMovimientos));
         tarjetas.add(tarjeta("Depósito", "Registre un depósito en la cuenta de un cliente", empleado, alDeposito));
-        tarjetas.add(tarjeta("Retiro", "Registre un retiro de la cuenta de un cliente", empleado, alRetiro));
-        tarjetas.add(tarjeta("Transferencia", "Mueva dinero de una cuenta a otra", empleado, alTransferencia));
+        tarjetas.add(tarjeta("Retiro",
+                empleado ? "Registre un retiro de la cuenta de un cliente" : "Registrar una salida de su cuenta",
+                true, alRetiro));
+        tarjetas.add(tarjeta("Transferencia",
+                empleado ? "Mueva dinero de una cuenta a otra" : "Mover fondos desde su cuenta",
+                true, alTransferencia));
         add(tarjetas, BorderLayout.CENTER);
     }
 

@@ -12,7 +12,8 @@ import ec.edu.monster.vista.LoginVista;
  */
 public class LoginControlador {
 
-    private static final String CREDENCIALES_VACIAS = "Ingrese usuario y contraseña";
+    private static final String CREDENCIALES_VACIAS_EMPLEADO = "Ingrese usuario y contraseña";
+    private static final String CREDENCIALES_VACIAS_CLIENTE = "Ingrese número de cuenta y clave";
 
     private final LoginVista vista;
     private final LoginServicio servicio;
@@ -26,15 +27,19 @@ public class LoginControlador {
     }
 
     private void ingresar() {
-        String usuario = vista.getUsuario();
+        boolean esCliente = vista.esCliente();
+        String identificador = vista.getUsuario();
         String clave = vista.getClave();
-        if (estaVacio(usuario) || estaVacio(clave)) {
-            vista.mostrarError(CREDENCIALES_VACIAS);
+        if (estaVacio(identificador) || estaVacio(clave)) {
+            vista.mostrarError(esCliente ? CREDENCIALES_VACIAS_CLIENTE : CREDENCIALES_VACIAS_EMPLEADO);
             return;
         }
         try {
-            DatosSesion datos = servicio.loginEmpleado(usuario.trim(), clave);
-            sesion.iniciar(usuario.trim(), datos);
+            String usuario = identificador.trim();
+            DatosSesion datos = esCliente
+                    ? servicio.loginCliente(usuario, clave)
+                    : servicio.loginEmpleado(usuario, clave);
+            sesion.iniciar(usuario, datos);
             vista.abrirMenu();
         } catch (ServicioException e) {
             vista.mostrarError(e.getMessage());

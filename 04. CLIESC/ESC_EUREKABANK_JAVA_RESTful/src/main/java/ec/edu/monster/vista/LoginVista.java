@@ -10,6 +10,9 @@ public interface LoginVista {
 
     String getClave();
 
+    /** True when the user picked the "Cliente" role (account number + key). */
+    boolean esCliente();
+
     void mostrarError(String mensaje);
 
     void abrirMenu();

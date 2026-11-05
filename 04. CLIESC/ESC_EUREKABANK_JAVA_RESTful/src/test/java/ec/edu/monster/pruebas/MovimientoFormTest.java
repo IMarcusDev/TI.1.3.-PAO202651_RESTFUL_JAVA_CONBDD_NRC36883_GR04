@@ -15,7 +15,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
-/** Plain unit tests of the withdrawal/transfer form validation and the receipt. */
+/** Plain unit tests of the movement form validation and the receipt. */
 class MovimientoFormTest {
 
     private static final String IMPORTE_INVALIDO =
@@ -83,25 +83,54 @@ class MovimientoFormTest {
     }
 
     @Test
-    void depositRequiresEmployeeAndTargetAccount() {
-        MovimientoForm form = MovimientoForm.deposito(" ", null, "10");
+    void depositRequiresOnlyTheTargetAccount() {
+        MovimientoForm form = MovimientoForm.deposito(null, "10");
 
         assertFalse(form.isValido());
-        assertEquals("Ingrese el código de empleado", form.getErrores().get("empleado"));
         assertEquals("Ingrese la cuenta de destino", form.getErrores().get("cuenta"));
+        assertEquals(1, form.getErrores().size());
     }
 
     @Test
-    void depositTrimsIdsAndLimitsThemTo30Characters() {
-        MovimientoForm form = MovimientoForm.deposito(" 0001 ", " 0004 ", "100");
+    void depositTrimsTheAccountAndLimitsItTo30Characters() {
+        MovimientoForm form = MovimientoForm.deposito(" 0004 ", "100");
         assertTrue(form.isValido(), () -> form.getErrores().toString());
-        assertEquals("0001", form.getEmpleado());
         assertEquals("0004", form.getCuenta());
 
-        MovimientoForm largo = MovimientoForm.deposito("1".repeat(31), "2".repeat(31), "10");
-        assertTrue(largo.getErrores().containsKey("empleado"));
-        assertTrue(largo.getErrores().containsKey("cuenta"));
-        assertTrue(MovimientoForm.deposito("1".repeat(30), "2".repeat(30), "10").isValido());
+        assertTrue(MovimientoForm.deposito("1".repeat(31), "10").getErrores().containsKey("cuenta"));
+        assertTrue(MovimientoForm.deposito("1".repeat(30), "10").isValido());
+    }
+
+    @Test
+    void employeeWithdrawalRequiresTheAccountKey() {
+        MovimientoForm form = MovimientoForm.retiroEmpleado("0002", "  ", "50");
+
+        assertFalse(form.isValido());
+        assertEquals("Ingrese la clave de la cuenta", form.getErrores().get("clave"));
+    }
+
+    @Test
+    void employeeKeyIsKeptAsTypedAndNeverTrimmed() {
+        MovimientoForm form = MovimientoForm.retiroEmpleado(" 0002 ", " clave ", "50");
+
+        assertTrue(form.isValido(), () -> form.getErrores().toString());
+        assertEquals("0002", form.getCuenta());
+        assertEquals(" clave ", form.getClave());
+    }
+
+    @Test
+    void clienteFormsSendNoKey() {
+        assertEquals("", MovimientoForm.retiro("00100001", "10").getClave());
+        assertEquals("", MovimientoForm.transferencia("00100001", "0002", "10").getClave());
+    }
+
+    @Test
+    void employeeTransferRequiresTheKeyOfTheOrigin() {
+        MovimientoForm form = MovimientoForm.transferenciaEmpleado("0001", "0002", "", "25");
+
+        assertFalse(form.isValido());
+        assertEquals("Ingrese la clave de la cuenta", form.getErrores().get("clave"));
+        assertEquals("clave", MovimientoForm.transferenciaEmpleado("0001", "0002", "clave", "25").getClave());
     }
 
     @Test
@@ -112,12 +141,12 @@ class MovimientoFormTest {
     }
 
     @Test
-    void depositReceiptShowsEmployeeAndTargetAccount() {
-        MovimientoForm form = MovimientoForm.deposito("0001", "0004", "100");
+    void depositReceiptShowsOnlyTheTargetAccount() {
+        MovimientoForm form = MovimientoForm.deposito("0004", "100");
         Comprobante comprobante = Comprobantes.deposito(form, new ResultadoMovimiento(101, new BigDecimal("500.00"), "Depósito registrado"));
 
         assertEquals("Depósito", comprobante.operacion());
-        assertEquals("Empleado 0001", comprobante.cuentaOrigen());
+        assertEquals("", comprobante.cuentaOrigen());
         assertEquals("0004", comprobante.cuentaDestino());
         assertEquals("$ 100.00", comprobante.importe());
         assertEquals(101, comprobante.idMovimiento());
